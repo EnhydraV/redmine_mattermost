@@ -15,7 +15,7 @@ class MessengerDeliverJob < ActiveJob::Base
       req.set_form_data payload: params.to_json
       Net::HTTP.start uri.hostname, uri.port, http_options do |http|
         response = http.request req
-        Rails.logger.warn response.inspect unless [Net::HTTPSuccess, Net::HTTPRedirection, Net::HTTPOK].include? response
+        Rails.logger.warn response.inspect unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
       end
     rescue StandardError => e
       Rails.logger.warn "cannot connect to #{url}"
