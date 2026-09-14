@@ -32,7 +32,7 @@ ja:
   messenger_issue_intro: メッセンジャーに送信するチケットのイベントにチェックを入れて下さい。
   messenger_settings_intro: 管理画面でメッセンジャーのURLを指定した場合、全てのプロジェクトのデフォルトの送信先になります。プロジェクト毎の送信先を設定する場合はプロジェクトの設定画面で設定して下さい。
   messenger_settings_project_intro: メッセンジャーのURLを指定しない場合、管理者が指定したチャンネルにメッセージが送信されます。(管理者がチャンネルを指定していない場合は、空欄にすると機能は無効になります)
-  messenger_url_info_html: 'メッセンジャー サービスで <a target="_blank" href="https://github.com/AlphaNodes/redmine_messenger#prepare-your-messenger-service">内向きのウェブフック</a>のURLを作成して下さい。プロジェクト毎に設定を変えたい場合は空欄として下さい。'
+  messenger_url_info_html: 'メッセンジャー サービスで <a target="_blank" href="https://github.com/smartorigin/redmine_messenger_so#prepare-your-messenger-service">内向きのウェブフック</a>のURLを作成して下さい。プロジェクト毎に設定を変えたい場合は空欄として下さい。'
   messenger_verify_ssl_info_html: 'メッセンジャー サービスが自己署名証明書や不正な証明書を使っている場合、無効として下さい。'
   messenger_wiki_intro: メッセンジャーに送信するWikiのイベントにチェックを入れて下さい。
   permission_manage_messenger: メッセンジャーの管理
