@@ -21,11 +21,11 @@ This plugin posts updates to issues in your Redmine installation to [Slack](http
 
 Rocket.Chat output:
 
-![screenshot](https://raw.githubusercontent.com/alphanodes/redmine_messenger/master/assets/images/screenshot_rocketchat.png)
+![screenshot](https://raw.githubusercontent.com/smartorigin/redmine_messenger_so/main/assets/images/screenshot_rocketchat.png)
 
 Redmine configuration:
 
-![screenshot](https://raw.githubusercontent.com/alphanodes/redmine_messenger/master/assets/images/screenshot_redmine_settings.png)
+![screenshot](https://raw.githubusercontent.com/smartorigin/redmine_messenger_so/main/assets/images/screenshot_redmine_settings.png)
 
 * **Convert names to mentions:** Automatically converts Redmine mentions into Slack mentions so a user is notified through Slack when mentioned in a Redmine note. Depends on Redmine Mentions plugin.
 
@@ -76,15 +76,15 @@ Go to Rocket.Chat documentation [Incoming WebHook Scripting](https://rocket.chat
 
 ## Installation
 
-Install ``redmine_messenger`` plugin for `Redmine`
+Install ``redmine_messenger_so`` plugin for `Redmine`
 
     cd $REDMINE_ROOT
-    git clone https://github.com/AlphaNodes/redmine_messenger.git plugins/redmine_messenger
+    git clone https://github.com/smartorigin/redmine_messenger_so.git plugins/redmine_messenger_so
     bundle config set --local without 'development test'
     bundle install
     bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
-Make sure that the directory is named `redmine_messenger` (you cannot use another name for it)!
+Make sure that the directory is named `redmine_messenger_so` (you cannot use another name for it)!
 Restart Redmine (application server) and you should see the plugin show up in the Plugins page.
 Under the configuration options, set the Messenger API URL to the URL for an
 Incoming WebHook integration in your Messenger account and also set the Messenger
@@ -94,21 +94,21 @@ and clicking the down-arrow and selecting view info).
 
 ## Uninstall
 
-Uninstall ``redmine_messenger``
+Uninstall ``redmine_messenger_so``
 
     cd $REDMINE_ROOT
-    bundle exec rake redmine:plugins:migrate NAME=redmine_messenger VERSION=0 RAILS_ENV=production
-    rm -rf plugins/redmine_messenger
+    bundle exec rake redmine:plugins:migrate NAME=redmine_messenger_so VERSION=0 RAILS_ENV=production
+    rm -rf plugins/redmine_messenger_so
 
 Restart Redmine (application server)
 
 ## License
 
-*redmine_messenger* plugin is developed under the [MIT License](LICENSE).
+*redmine_messenger_so* plugin is developed under the [MIT License](LICENSE).
 
 ## Redmine Copyright
 
-The redmine_messenger is a plugin extension for Redmine Project Management Software, whose Copyright follows.
+The redmine_messenger_so is a plugin extension for Redmine Project Management Software, whose Copyright follows.
 Copyright (C) 2006-  Jean-Philippe Lang
 
 Redmine is a flexible project management web application written using Ruby on Rails framework.

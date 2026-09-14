@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RedmineMessenger
+module RedmineMessengerSo
   VERSION = '1.1.1'
 
   include RedminePluginKit::PluginBase
@@ -18,7 +18,7 @@ module RedmineMessenger
       loader.add_helper [{ controller: 'Projects', helper: 'MessengerProjects' }]
 
       # Global helpers
-      loader.add_global_helper RedmineMessenger::Helpers
+      loader.add_global_helper RedmineMessengerSo::Helpers
 
       # Apply patches and helper
       loader.apply!

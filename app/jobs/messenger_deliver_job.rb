@@ -9,7 +9,7 @@ class MessengerDeliverJob < ActiveJob::Base
   def perform(url, params)
     uri = URI url
     http_options = { use_ssl: uri.scheme == 'https' }
-    http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE unless RedmineMessenger.setting? :messenger_verify_ssl
+    http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE unless RedmineMessengerSo.setting? :messenger_verify_ssl
     begin
       req = Net::HTTP::Post.new uri
       req.set_form_data payload: params.to_json

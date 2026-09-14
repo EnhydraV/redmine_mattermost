@@ -28,7 +28,7 @@ class Messenger
     end
 
     def speak(msg, channels, url, options)
-      url ||= RedmineMessenger.setting :messenger_url
+      url ||= RedmineMessengerSo.setting :messenger_url
       return if url.blank? || channels.blank?
 
       params = { text: msg, link_names: 1 }
@@ -72,7 +72,7 @@ class Messenger
       parent_url = url_for_project proj.parent
       return parent_url if parent_url.present?
       # system based
-      return RedmineMessenger.setting :messenger_url if RedmineMessenger.setting(:messenger_url).present?
+      return RedmineMessengerSo.setting :messenger_url if RedmineMessengerSo.setting(:messenger_url).present?
 
       nil
     end
@@ -99,7 +99,7 @@ class Messenger
       # parent project based
       parent_field = textfield_for_project proj.parent, config
       return parent_field if parent_field.present?
-      return RedmineMessenger.setting config if RedmineMessenger.setting(config).present?
+      return RedmineMessengerSo.setting config if RedmineMessengerSo.setting(config).present?
 
       ''
     end
@@ -138,7 +138,7 @@ class Messenger
         return parent_setting if @setting_found == 1
       end
       # system based
-      return true if RedmineMessenger.setting(config).present? && RedmineMessenger.setting?(config)
+      return true if RedmineMessengerSo.setting(config).present? && RedmineMessengerSo.setting?(config)
 
       false
     end
@@ -264,9 +264,9 @@ class Messenger
       parent_channel = channels_for_project proj.parent
       return parent_channel if parent_channel.present?
       # system based
-      if RedmineMessenger.setting(:messenger_channel).present? &&
-         RedmineMessenger.setting(:messenger_channel) != '-'
-        return RedmineMessenger.setting(:messenger_channel).split(',').map!(&:strip).uniq
+      if RedmineMessengerSo.setting(:messenger_channel).present? &&
+         RedmineMessengerSo.setting(:messenger_channel) != '-'
+        return RedmineMessengerSo.setting(:messenger_channel).split(',').map!(&:strip).uniq
       end
 
       []

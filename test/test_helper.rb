@@ -10,7 +10,7 @@ end
 
 require File.expand_path "#{File.dirname __FILE__}/../../../test/test_helper"
 
-module RedmineMessenger
+module RedmineMessengerSo
   class TestCase
     include ActionDispatch::TestProcess
 

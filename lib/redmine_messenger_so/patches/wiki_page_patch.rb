@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RedmineMessenger
+module RedmineMessengerSo
   module Patches
     module WikiPagePatch
       extend ActiveSupport::Concern

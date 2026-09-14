@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RedmineMessenger
+module RedmineMessengerSo
   module Helpers
     def project_messenger_options(active)
       options_for_select({ l(:field_is_default) => '0',

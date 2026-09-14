@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-loader = RedminePluginKit::Loader.new plugin_id: 'redmine_messenger'
+loader = RedminePluginKit::Loader.new plugin_id: 'redmine_messenger_so'
 
-Redmine::Plugin.register :redmine_messenger do
+Redmine::Plugin.register :redmine_messenger_so do
   name 'Messenger'
   author 'Smart/Origin'
-  url 'https://github.com/smartorigin/redmine_messenger'
+  url 'https://github.com/smartorigin/redmine_messenger_so'
   author_url 'https://smart-origin.com/'
   description 'Messenger integration for Slack, Discord, Rocketchat and Mattermost support'
-  version RedmineMessenger::VERSION
+  version RedmineMessengerSo::VERSION
 
   requires_redmine version_or_higher: '4.2.0'
 
@@ -18,4 +18,4 @@ Redmine::Plugin.register :redmine_messenger do
 end
 
 RedminePluginKit::Loader.persisting { loader.load_model_hooks! }
-RedminePluginKit::Loader.to_prepare { RedmineMessenger.setup! } if Rails.version < '6.0'
+RedminePluginKit::Loader.to_prepare { RedmineMessengerSo.setup! } if Rails.version < '6.0'

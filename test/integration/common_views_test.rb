@@ -19,7 +19,7 @@ class CommonViewsTest < Redmine::IntegrationTest
            :custom_fields_trackers
 
   def setup
-    RedmineMessenger::TestCase.prepare
+    RedmineMessengerSo::TestCase.prepare
   end
 
   test 'View user' do

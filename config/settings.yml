@@ -1,7 +1,7 @@
 ---
 
 messenger_url: ''
-messenger_icon: 'https://raw.githubusercontent.com/alphanodes/redmine_messenger/master/assets/images/icon.png'
+messenger_icon: 'https://raw.githubusercontent.com/smartorigin/redmine_messenger_so/main/assets/images/icon.png'
 messenger_channel: 'redmine'
 messenger_username: 'robot'
 messenger_verify_ssl: 1

@@ -79,12 +79,12 @@ pipeline {
                                             apt-get update && apt-get install -y build-essential cmake libicu-dev git ${DB_TYPE == 'mysql' ? 'default-libmysqlclient-dev' : 'libpq-dev'}
                                             
                                             git clone --branch ${REDMINE_VER} https://github.com/redmine/redmine.git redmine
-                                            mkdir -p redmine/plugins/redmine_messenger
+                                            mkdir -p redmine/plugins/redmine_messenger_so
                                             # Copy only the plugin files, excluding the redmine directory itself
-                                            find . -maxdepth 1 -not -name 'redmine' -not -name '.' -not -name '..' -exec cp -R {} redmine/plugins/redmine_messenger/ \\;
+                                            find . -maxdepth 1 -not -name 'redmine' -not -name '.' -not -name '..' -exec cp -R {} redmine/plugins/redmine_messenger_so/ \\;
                                             cd redmine
-                                            cp plugins/redmine_messenger/test/support/configuration.yml config/configuration.yml
-                                            cp plugins/redmine_messenger/test/support/database-${DB_TYPE}.yml config/database.yml
+                                            cp plugins/redmine_messenger_so/test/support/configuration.yml config/configuration.yml
+                                            cp plugins/redmine_messenger_so/test/support/database-${DB_TYPE}.yml config/database.yml
                                             
                                             # Point to the container name in the podman network
                                             sed -i 's/localhost/${dbName}/g' config/database.yml
@@ -96,7 +96,7 @@ pipeline {
                                             bundle exec rake generate_secret_token
                                             bundle exec rake db:create db:migrate redmine:plugins:migrate
                                             bundle exec rake db:test:prepare
-                                            bundle exec rake redmine:plugins:test NAME=redmine_messenger RUBYOPT='-W0'
+                                            bundle exec rake redmine:plugins:test NAME=redmine_messenger_so RUBYOPT='-W0'
                                         "
                                     """
                                 } finally {

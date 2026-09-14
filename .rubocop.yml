@@ -73,7 +73,7 @@ Style/OptionHash:
     - parameters
     - settings
   Exclude:
-    - lib/redmine_messenger/patches/*.rb
+    - lib/redmine_messenger_so/patches/*.rb
 
 # postgresql and mysql are supported
 # autodetect does not work without database configuration
