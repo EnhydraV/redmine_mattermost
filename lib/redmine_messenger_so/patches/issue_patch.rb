@@ -119,7 +119,7 @@ module RedmineMessengerSo
               attachment[:text] = attachment_text if attachment_text.present?
             end
 
-            fields = current_journal.details.map { |d| Messenger.detail_to_field d, project }
+            fields = current_journal.details.map { |d| Messenger.detail_to_field d }
             if current_journal.notes.present?
               fields << { title: I18n.t(:label_comment),
                           value: Messenger.markup_format(current_journal.notes),
