@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        podman run --rm -v \$(pwd):/app -w /app ruby:3.4 bash -c "
+                        podman run --rm -v \$(pwd):/app -w /app ruby:4.0 bash -c "
                             set -xe
                             touch .enable_dev
                             sed -i \\"3isource 'https://rubygems.org'\\" Gemfile
@@ -30,13 +30,14 @@ pipeline {
         stage('Tests') {
             matrix {
                 axes {
-                    axis { name 'RUBY_VER'; values '3.1', '3.2', '3.3', '3.4' }
-                    axis { name 'REDMINE_VER'; values '6.0-stable', 'master' }
+                    axis { name 'RUBY_VER'; values '3.1', '3.2', '3.3', '3.4', '4.0' }
+                    axis { name 'REDMINE_VER'; values '6.0.11', '6.1.4', '7.0.1' }
                     axis { name 'DB_TYPE'; values 'postgres', 'mysql' }
                 }
                 excludes {
-                    exclude { axis { name 'RUBY_VER'; values '3.1' }; axis { name 'REDMINE_VER'; values 'master' } }
-                    exclude { axis { name 'RUBY_VER'; values '3.4' }; axis { name 'REDMINE_VER'; values '6.0-stable' } }
+                    exclude { axis { name 'RUBY_VER'; values '3.4', '4.0' }; axis { name 'REDMINE_VER'; values '6.0.11' } }
+                    exclude { axis { name 'RUBY_VER'; values '3.1', '4.0' }; axis { name 'REDMINE_VER'; values '6.1.4' } }
+                    exclude { axis { name 'RUBY_VER'; values '3.1' }; axis { name 'REDMINE_VER'; values '7.0.1' } }
                 }
                 
                 stages {
@@ -52,7 +53,7 @@ pipeline {
                                     sh "podman network create ${networkName}"
 
                                     // Start Database
-                                    def dbImg = (DB_TYPE == 'postgres') ? 'postgres:16' : 'mysql:8.0'
+                                    def dbImg = (DB_TYPE == 'postgres') ? 'postgres:16' : 'mysql:9.7'
                                     def dbEnv = (DB_TYPE == 'postgres') ? 
                                         "-e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres" : 
                                         "-e MYSQL_ROOT_PASSWORD=BestPasswordEver"
@@ -78,7 +79,7 @@ pipeline {
                                             
                                             apt-get update && apt-get install -y build-essential cmake libicu-dev git ${DB_TYPE == 'mysql' ? 'default-libmysqlclient-dev' : 'libpq-dev'}
                                             
-                                            git clone --branch ${REDMINE_VER} https://github.com/redmine/redmine.git redmine
+                                            git clone --depth 1 --branch ${REDMINE_VER} https://github.com/redmine/redmine.git redmine
                                             mkdir -p redmine/plugins/redmine_messenger_so
                                             # Copy only the plugin files, excluding the redmine directory itself
                                             find . -maxdepth 1 -not -name 'redmine' -not -name '.' -not -name '..' -exec cp -R {} redmine/plugins/redmine_messenger_so/ \\;
