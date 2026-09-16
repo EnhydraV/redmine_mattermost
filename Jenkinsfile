@@ -2,7 +2,7 @@ pipeline {
     agent { label 'ansible-agent' }
 
     options {
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 120, unit: 'MINUTES')
     }
 
     stages {
@@ -29,12 +29,14 @@ pipeline {
         // --- TEST MATRIX ---
         stage('Tests') {
             matrix {
+                agent { label 'ansible-agent' }
                 axes {
                     axis { name 'RUBY_VER'; values '3.1', '3.2', '3.3', '3.4', '4.0' }
                     axis { name 'REDMINE_VER'; values '6.0.11', '6.1.4', '7.0.1' }
                     axis { name 'DB_TYPE'; values 'postgres', 'mysql' }
                 }
                 excludes {
+                    // See https://www.redmine.org/projects/redmine/wiki/RedmineInstall
                     exclude { axis { name 'RUBY_VER'; values '3.4', '4.0' }; axis { name 'REDMINE_VER'; values '6.0.11' } }
                     exclude { axis { name 'RUBY_VER'; values '3.1', '4.0' }; axis { name 'REDMINE_VER'; values '6.1.4' } }
                     exclude { axis { name 'RUBY_VER'; values '3.1' }; axis { name 'REDMINE_VER'; values '7.0.1' } }
@@ -60,7 +62,7 @@ pipeline {
                                     
                                     sh "podman run -d --name ${dbName} --network ${networkName} ${dbEnv} ${dbImg}"
                                     // Wait a bit for db to be ready
-                                    sh "sleep 300"
+                                    sh "sleep 200"
 
                                     // Run Application Logic
                                     // Create unique volume for this matrix cell to prevent conflicts
@@ -91,7 +93,7 @@ pipeline {
                                             sed -i 's/localhost/${dbName}/g' config/database.yml
                                             
                                             bundle config set --local without 'development'
-                                            bundle install --jobs=4 --retry=3
+                                            bundle install --jobs=2 --retry=3
                                             
                                             export RAILS_ENV=test
                                             bundle exec rake generate_secret_token
