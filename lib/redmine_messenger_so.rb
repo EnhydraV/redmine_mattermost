@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RedmineMessengerSo
-  VERSION = '1.1.1'
+  VERSION = '1.1.2'
 
   include RedminePluginKit::PluginBase
 

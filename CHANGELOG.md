@@ -1,6 +1,18 @@
 Changelog
 =========
 
+1.1.2
+------
+
+- Redmine 7.X compatibility
+- BREAKING:
+    - Rename the plugin to redmine_messenger_so
+- MINOR changes:
+    - Change messenger_url_info_html help message with updated doc URL
+    - More generic http result validation in delivery job
+    - Fix detail_to_field additional param for redmine 7.X / ruby 4.0 compatibility
+- Continuous integration: update Jenkins configuration for redmine 7.X
+
 1.1.1
 ------
 
