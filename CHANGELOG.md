@@ -1,6 +1,39 @@
 Changelog
 =========
 
+2.0.0
+------
+
+- BREAKING:
+    - Mattermost only: Slack, Discord and Rocket.Chat support removed
+    - Plugin renamed to redmine_mattermost (module RedmineMattermost, table mattermost_settings)
+    - Messages are posted by a Mattermost bot account through the REST API (POST /api/v4/posts);
+      incoming webhooks, icon and username settings are removed
+    - Redmine >= 6.0 is required
+- Settings:
+    - New global settings: server URL, bot access token (or REDMINE_MATTERMOST_BOT_TOKEN environment variable), team
+    - Per project: team and channels, `@username` destinations for direct messages
+    - Migration 002 imports the settings of redmine_messenger and redmine_messenger_so (webhook URLs excepted)
+- Messages:
+    - Mattermost Markdown: `[label](url)` links, `**bold**` user names, escaped names and subjects
+    - Commit keyword updates are posted once, with a link to the revision
+    - Mentions on updates come from the journal notes, through Redmine's own mention detection
+    - Only custom fields visible to everyone are posted
+    - Direct messages follow Redmine recipients, including private notes visibility
+- Fixes:
+    - Wiki page edits were not posted: edits save WikiContent, while the plugin watched WikiPage
+    - Double notification when a commit keyword updated an issue
+    - Thread-safe settings resolution (no more shared state between requests)
+    - A deleted custom field no longer breaks the notification
+    - Webhook URL no longer written to the logs; the bot token never appears in error messages
+    - Checkboxes of the global settings page now reflect default values
+    - Displaying the project tab no longer creates a database record
+- Delivery job retries network errors and HTTP 429/5xx twice
+- Optional Mattermost server plugin (mattermost-plugin/, id com.github.enhydrav.redmine-mattermost):
+  with the new "Post as the acting user" setting, messages are published as the Mattermost user
+  who acted in Redmine (same username, or same email), the bot posting otherwise
+- The acting user is never mentioned in the message
+
 1.1.2
 ------
 

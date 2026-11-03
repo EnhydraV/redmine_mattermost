@@ -1,0 +1,6 @@
+p
+  = label_tag nil, l("label_settings_#{mf}")
+  = hidden_field_tag "settings[#{mf}]", 0, id: nil
+  = check_box_tag "settings[#{mf}]", 1, RedminePluginKit.true?(settings[mf.to_sym])
+  - if defined?(info) && info.present?
+    em.info = info

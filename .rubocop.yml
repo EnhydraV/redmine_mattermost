@@ -4,8 +4,8 @@ plugins:
   - rubocop-minitest
 
 AllCops:
-  TargetRubyVersion: 2.7
-  TargetRailsVersion: 6.1
+  TargetRubyVersion: 3.1
+  TargetRailsVersion: 7.2
   NewCops: enable
 
 Rails:
@@ -73,7 +73,7 @@ Style/OptionHash:
     - parameters
     - settings
   Exclude:
-    - lib/redmine_messenger_so/patches/*.rb
+    - lib/redmine_mattermost/patches/*.rb
 
 # postgresql and mysql are supported
 # autodetect does not work without database configuration
@@ -109,4 +109,4 @@ Naming/VariableNumber:
 Rails/ActionControllerFlashBeforeRender:
   Enabled: true
   Exclude:
-    - app/controllers/messenger_settings_controller.rb
+    - app/controllers/mattermost_settings_controller.rb

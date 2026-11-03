@@ -1,0 +1,42 @@
+- @mattermost_setting = MattermostSetting.find_or_initialize_by project_id: @project.id
+= labelled_form_for :setting,
+                    @mattermost_setting,
+                    url: project_mattermost_setting_path(project_id: @project),
+                    method: :put do |f|
+
+  fieldset.box.tabular
+    legend = l :label_mattermost_destination
+
+    - if User.current.admin?
+      .contextual
+        = link_to l(:label_administration), plugin_settings_path(id: 'redmine_mattermost'), class: 'icon icon-settings'
+
+    .info = t :mattermost_settings_project_intro
+    br
+    = render 'mattermost_settings/mattermost_text', f: f, mf: :mattermost_team, size: 30
+    = render 'mattermost_settings/mattermost_text', f: f, mf: :mattermost_channel, size: 30,
+      info: t(:mattermost_channel_info)
+
+  fieldset.box.tabular
+    legend = l :label_issue_plural
+    .info = t :mattermost_issue_intro
+    br
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :auto_mentions
+    = render 'mattermost_settings/mattermost_text', f: f, mf: :default_mentions, size: 30
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :display_watchers
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :post_updates
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :post_updates_reopened
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :new_include_description
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :updated_include_description
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :post_private_issues
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :post_private_notes
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :direct_messages
+
+  fieldset.box.tabular
+    legend = l :label_wiki
+    .info = t :mattermost_wiki_intro
+    br
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :post_wiki
+    = render 'mattermost_settings/mattermost_select', f: f, mf: :post_wiki_updates
+
+  = submit_tag l(:button_save)

@@ -1,0 +1,7 @@
+p
+  = f.select mf, project_mattermost_options(@mattermost_setting.public_send(mf)), label: l("label_settings_#{mf}")
+  '
+  em.info style="display: inline;"
+    = l :label_default
+    ' :
+    = project_setting_mattermost_default_value mf

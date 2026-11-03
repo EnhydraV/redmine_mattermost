@@ -1,0 +1,54 @@
+.info = t :mattermost_settings_intro
+br
+
+fieldset.box.tabular
+  legend = l :label_mattermost_connection
+  p
+    label = l :label_settings_mattermost_url
+    = text_field_tag 'settings[mattermost_url]', @settings[:mattermost_url], size: 60, placeholder: 'https://chat.example.com'
+    em.info = t :mattermost_url_info
+  p
+    label = l :label_settings_mattermost_bot_token
+    - if RedmineMattermost.bot_token_from_env?
+      em.info = t :mattermost_bot_token_env_info, name: RedmineMattermost::BOT_TOKEN_ENV
+    - else
+      = password_field_tag 'settings[mattermost_bot_token]', @settings[:mattermost_bot_token], size: 40, autocomplete: 'off'
+      em.info = t :mattermost_bot_token_info, name: RedmineMattermost::BOT_TOKEN_ENV
+  p
+    label = l :label_settings_mattermost_team
+    = text_field_tag 'settings[mattermost_team]', @settings[:mattermost_team], size: 30
+    em.info = t :mattermost_team_info
+  p
+    label = l :label_settings_mattermost_channel
+    = text_field_tag 'settings[mattermost_channel]', @settings[:mattermost_channel], size: 30, placeholder: 'redmine'
+    em.info = t :mattermost_channel_info
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'mattermost_verify_ssl',
+    settings: @settings, info: t(:mattermost_verify_ssl_info)
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_as_actor',
+    settings: @settings, info: t(:mattermost_post_as_actor_info, plugin_id: RedmineMattermost::RELAY_PLUGIN_ID)
+
+fieldset.box.tabular
+  legend = l :label_issue_plural
+  .info = t :mattermost_issue_intro
+  br
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'auto_mentions', settings: @settings
+  p
+    label = l :label_settings_default_mentions
+    = text_field_tag 'settings[default_mentions]', @settings[:default_mentions], size: 30
+    em.info = t :mattermost_default_mentions_info
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'display_watchers', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_updates', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_updates_reopened', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'new_include_description', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'updated_include_description', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_private_issues', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_private_notes', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'direct_messages',
+    settings: @settings, info: t(:mattermost_direct_messages_info)
+
+fieldset.box.tabular
+  legend = l :label_wiki
+  .info = t :mattermost_wiki_intro
+  br
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_wiki', settings: @settings
+  = render 'mattermost_settings/mattermost_checkbox', mf: 'post_wiki_updates', settings: @settings

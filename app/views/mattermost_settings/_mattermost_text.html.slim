@@ -1,0 +1,12 @@
+p
+  = f.text_field mf, size: size, label: l("label_settings_#{mf}")
+  em.info
+    = l :label_mattermost_project_text_field_info
+    |  (
+    = l :label_default
+    ' :
+    = project_setting_mattermost_default_text mf
+    | )
+    - if defined?(info) && info.present?
+      br
+      = info

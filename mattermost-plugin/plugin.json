@@ -1,0 +1,36 @@
+{
+    "id": "com.github.enhydrav.redmine-mattermost",
+    "name": "Redmine relay",
+    "description": "Lets the redmine_mattermost Redmine plugin post notifications as the Mattermost user who acted in Redmine.",
+    "homepage_url": "https://github.com/EnhydraV/redmine_mattermost",
+    "support_url": "https://github.com/EnhydraV/redmine_mattermost/issues",
+    "version": "2.0.0",
+    "min_server_version": "12.0.0",
+    "server": {
+        "executables": {
+            "linux-amd64": "server/dist/plugin-linux-amd64",
+            "linux-arm64": "server/dist/plugin-linux-arm64"
+        }
+    },
+    "settings_schema": {
+        "header": "Redmine posts through this plugin with the access token of its bot account. A post is published as the user who acted in Redmine when that user exists in Mattermost and can post in the channel, otherwise as the bot.",
+        "footer": "",
+        "settings": [
+            {
+                "key": "AllowedUsernames",
+                "display_name": "Redmine bot account",
+                "type": "text",
+                "help_text": "Username of the account whose access token Redmine uses (several names can be separated by commas). Requests from any other account are refused.",
+                "placeholder": "redmine",
+                "default": "redmine"
+            },
+            {
+                "key": "MatchByEmail",
+                "display_name": "Match users by email",
+                "type": "bool",
+                "help_text": "When no Mattermost user has the Redmine login as username, look the user up by email address.",
+                "default": true
+            }
+        ]
+    }
+}

@@ -10,19 +10,47 @@ end
 
 require File.expand_path "#{File.dirname __FILE__}/../../../test/test_helper"
 
-module RedmineMessengerSo
-  class TestCase
-    include ActionDispatch::TestProcess
+module RedmineMattermost
+  module TestHelper
+    include ActiveJob::TestHelper
 
-    def self.prepare
-      Role.where(id: [1, 2]).find_each do |r|
-        r.permissions << :view_issues
-        r.save
-      end
+    # Redmine force l'adaptateur :inline en test, que TestHelper respecte depuis Rails 7.2
+    def queue_adapter_for_test
+      ActiveJob::QueueAdapters::TestAdapter.new
+    end
 
-      Project.where(id: [1, 2]).find_each do |project|
-        EnabledModule.create project: project, name: 'issue_tracking'
-      end
+    BASE_SETTINGS = { 'mattermost_url' => 'https://chat.example.com',
+                      'mattermost_bot_token' => 'bot-token',
+                      'mattermost_team' => 'dev',
+                      'mattermost_channel' => 'redmine' }.freeze
+
+    def with_mattermost_settings(overrides = {}, &)
+      values = RedmineMattermost.loader.default_settings.stringify_keys
+                                .merge(BASE_SETTINGS)
+                                .merge(overrides.stringify_keys)
+      with_settings plugin_redmine_mattermost: ActiveSupport::HashWithIndifferentAccess.new(values), &
+    end
+
+    # Envois mis en file : [[target, payload, actor], ...]
+    def mattermost_deliveries
+      jobs = enqueued_jobs.select { |job| job[:job] == MattermostDeliverJob }
+      jobs.map! { |job| ActiveJob::Arguments.deserialize job[:args] }
+    end
+
+    def mattermost_payloads
+      payloads = mattermost_deliveries.map(&:second)
+      payloads.uniq!
+      payloads
+    end
+
+    def attachment_fields(payload)
+      payload.dig('props', 'attachments', 0, 'fields') || []
+    end
+
+    def set_project_setting(project, attributes)
+      setting = MattermostSetting.find_or_initialize_by project_id: project.id
+      setting.update! attributes
+      project.reload
     end
   end
 end

@@ -1,40 +1,45 @@
 # Dutch strings
 nl:
-  default_mentionsl_info: Standaard gebruikers om op de hoogte te stellen, gescheiden door een komma (e.g. @all, @here)
-  label_messenger_default_not_visible: Standaardwaarde is niet zichtbaar vanwege beveiligingsredenen.
-  label_messenger_issue_created: "%{project_url} - Issue %{url} aangemaakt door *%{user}*"
-  label_messenger_issue_updated: "%{project_url} - Issue %{url} bijgewerkt door *%{user}*"
-  label_messenger_outgoing_webhook: Uitgaande Webhook
-  label_messenger_project_text_field_info: Laat leeg voor systeeminstelling.
-  label_messenger_setting: Messenger Instellingen
-  label_messenger_settings_disabled: Uitgeschakeld
-  label_messenger_settings_enabled: Ingeschakeld
-  label_messenger_wiki_created: "%{project_url} - Wiki %{url} aangemaakt door *%{user}*"
-  label_messenger_wiki_updated: "%{project_url} - Wiki %{url} bijgewerkt door *%{user}*"
-  label_messenger: Messenger
-  label_settings_auto_mentions: Zet namen om in mentions?
-  label_settings_default_mentions: Standaardgebuikers voor mentions
+  label_mattermost: Mattermost
+  label_mattermost_connection: Mattermost-verbinding
+  label_mattermost_destination: Bestemming
+  label_mattermost_issue_created: "%{project_url} - Issue %{url} aangemaakt door %{user}"
+  label_mattermost_issue_updated: "%{project_url} - Issue %{url} bijgewerkt door %{user}"
+  label_mattermost_mentions: "Aan: %{names}"
+  label_mattermost_project_text_field_info: Laat leeg om de standaardwaarde over te nemen.
+  label_mattermost_settings_disabled: Uitgeschakeld
+  label_mattermost_settings_enabled: Ingeschakeld
+  label_mattermost_wiki_created: "%{project_url} - Wiki %{url} aangemaakt door %{user}"
+  label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} bijgewerkt door %{user}"
+  label_settings_auto_mentions: Redmine-mentions omzetten in Mattermost-mentions?
+  label_settings_default_mentions: Standaardgebruikers voor mentions
+  label_settings_direct_messages: Stuur directe berichten
   label_settings_display_watchers: Geef watchers weer?
-  label_settings_messenger_channel: Messenger Kanaal
-  label_settings_messenger_icon: Messenger Icoon
-  label_settings_messenger_url: Messenger URL
-  label_settings_messenger_username: Messenger gebruikersnaam
-  label_settings_messenger_verify_ssl: Verifieer SSL
-  label_settings_messenger_direct_users_messages: Stuur directe berichten
+  label_settings_mattermost_bot_token: Toegangstoken van de bot
+  label_settings_mattermost_channel: Kanalen
+  label_settings_mattermost_team: Team
+  label_settings_mattermost_url: URL van de Mattermost-server
+  label_settings_mattermost_verify_ssl: Verifieer SSL
   label_settings_new_include_description: Nieuwe issue beschrijving?
+  label_settings_post_as_actor: "Plaatsen als de handelende gebruiker"
   label_settings_post_private_issues: Private issue bijwerkingen?
   label_settings_post_private_notes: Private notes bijwerkingen?
   label_settings_post_updates: Issue bijwerkingen?
-  label_settings_post_updates_reopened: Alleen updates voor heropende tickets opnemen
-  label_settings_post_wiki_updates: Wiki bijwerkingen?
+  label_settings_post_updates_reopened: Alleen updates voor heropende issues opnemen
   label_settings_post_wiki: Wiki toegevoegd?
+  label_settings_post_wiki_updates: Wiki bijwerkingen?
   label_settings_updated_include_description: Beschrijving in bijwerking issue?
-  messenger_channel_info_html: 'Hier kun je het kanaal opgeven dat gebruikt moet worden. Meerdere kanalen kunnen worden gebruikt, gescheiden door een komma'
-  messenger_issue_intro: Activeer de bijwerkingen voor Issues die gestuurd moeten worden naar het van tevoren gekozen kanaal.
-  messenger_settings_intro: "Laat de Messenger-URL in het beheergedeelte leeg om geen berichten van Redmine naar de Messenger te sturen. Het maakt niet uit wat je hier nog meer hebt geconfigureerd. Als je berichten van alle Redmine-projecten naar de Messenger wilt sturen, vul dan de URL in. De berichten worden naar het specifieke kanaal gestuurd. Als je alleen door enkele van de projecten (niet alle) op de hoogte wilt worden gehouden, laat u de messenger-URL hier leeg en gebruik de specifieke projectconfiguratie."
-  messenger_settings_project_intro: "Als u de Messenger-URL in het beheergedeelte leeg hebt gelaten voor het geval je niet wereldwijd op de hoogte wordt gesteld door alle projectwijzigingen, kun je de Messenger-URL configureren in de projectinstellingen."
-  messenger_url_info_html: 'Genereer een <a target="_blank" href="https://github.com/smartorigin/redmine_messenger_so#prepare-your-messenger-service">Inkomende WebHook</a> URL van de messenger service. Laat het leeg als u alleen specifieke projecten wilt activeren met projectgebaseerde instellingen'
-  messenger_verify_ssl_info_html: 'Als je Messenger-service een ongeldig of zelfondertekend SSL-certificaat gebruikt, schakel deze checkbox uit.'
-  messenger_direct_users_messages_info_html: 'Indien ingeschakeld, zal Messenger http-verzoeken naar elke gebruiker plaatsen als kanaal (direct bericht in RocketChat) samen met een bericht in het kanaal'
-  messenger_wiki_intro: "Activeer de wijzigingen voor Wiki's die naar het vooraf gedefinieerde Messenger-kanaal moeten worden verzonden."
-  permission_manage_messenger: Beheer messenger
+  mattermost_bot_token_env_info: Ingesteld via de omgevingsvariabele %{name}.
+  mattermost_bot_token_info: Toegangstoken van het botaccount. De omgevingsvariabele %{name} heeft, indien ingesteld, voorrang op dit veld.
+  mattermost_channel_info: "Kanaalnamen zoals in hun URL, gescheiden door een komma. @gebruikersnaam stuurt een direct bericht, - schakelt het versturen uit."
+  mattermost_default_mentions_info: "Standaard gebruikers om op de hoogte te stellen, gescheiden door een komma (bijv. @all, @here)"
+  mattermost_direct_messages_info: Stuurt ook een direct bericht naar elke gebruiker die Redmine op de hoogte stelt. De Mattermost-gebruikersnaam moet gelijk zijn aan de Redmine-login.
+  mattermost_issue_intro: Kies welke issue-gebeurtenissen naar Mattermost worden gestuurd.
+  mattermost_post_as_actor_info: "Plaatst elk bericht als de Mattermost-gebruiker die in Redmine handelde, via de serverplugin %{plugin_id} (map mattermost-plugin). De bot plaatst het bericht als de gebruiker onbekend is, niet in het kanaal mag schrijven, of als de plugin niet antwoordt."
+  mattermost_settings_intro: "De berichten worden geplaatst door een Mattermost-botaccount. Laat de server-URL of het token leeg om alle meldingen uit te schakelen. Het team en de kanalen die hier zijn ingesteld gelden voor alle projecten, en elk project kan ze in zijn instellingen overschrijven."
+  mattermost_settings_project_intro: Lege waarden worden overgenomen van het bovenliggende project en daarna van de globale instellingen.
+  mattermost_team_info: Teamnaam zoals in zijn URL, gebruikt om de kanalen te vinden.
+  mattermost_url_info: "Basis-URL van de Mattermost-server, bijv. https://chat.example.com"
+  mattermost_verify_ssl_info: Schakel dit uit als de Mattermost-server een ongeldig of zelfondertekend certificaat gebruikt.
+  mattermost_wiki_intro: Kies welke wiki-gebeurtenissen naar Mattermost worden gestuurd.
+  permission_manage_mattermost: Mattermost-meldingen beheren

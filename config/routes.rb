@@ -2,6 +2,6 @@
 
 Rails.application.routes.draw do
   resources :projects, only: [] do
-    resource :messenger_setting, only: %i[show update]
+    resource :mattermost_setting, only: %i[update]
   end
 end

@@ -1,11 +1,12 @@
 ---
 
-messenger_url: ''
-messenger_icon: 'https://raw.githubusercontent.com/smartorigin/redmine_messenger_so/main/assets/images/icon.png'
-messenger_channel: 'redmine'
-messenger_username: 'robot'
-messenger_verify_ssl: 1
-messenger_direct_users_messages: 0
+mattermost_url: ''
+mattermost_bot_token: ''
+mattermost_team: ''
+mattermost_channel: 'redmine'
+mattermost_verify_ssl: 1
+post_as_actor: 0
+direct_messages: 0
 auto_mentions: 0
 default_mentions: ''
 display_watchers: 0

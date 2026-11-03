@@ -19,7 +19,7 @@ class I18nTest < ActiveSupport::TestCase
   end
 
   def test_locales_validness
-    lang_files_count = Rails.root.glob('plugins/redmine_messenger_so/config/locales/*.yml').size
+    lang_files_count = Rails.root.glob('plugins/redmine_mattermost/config/locales/*.yml').size
 
     assert_equal 7, lang_files_count
     valid_languages.each do |lang|
@@ -27,10 +27,10 @@ class I18nTest < ActiveSupport::TestCase
       case lang.to_s
       when 'en'
 
-        assert_equal 'Messenger username', l(:label_settings_messenger_username)
-      when 'de', 'fr', 'ja', 'ko', 'pt-BR'
+        assert_equal 'Bot access token', l(:label_settings_mattermost_bot_token)
+      when 'de', 'fr', 'ja', 'ko', 'nl', 'pt-BR'
 
-        assert_not l(:label_settings_messenger_username) == 'Messenger username', lang
+        assert_not l(:label_settings_mattermost_bot_token) == 'Bot access token', lang
       end
     end
 

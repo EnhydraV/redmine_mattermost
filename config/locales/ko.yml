@@ -1,38 +1,45 @@
 # Korean strings
 ko:
-  default_mentionsl_info: 알림을 받을 기본 사용자를 나타내며, 쉼표로 구분 (e.g. @all, @here)
-  label_messenger_default_not_visible: 보안 상의 이유로 기본값이 보여지지 않습니다.
-  label_messenger_issue_created: "%{project_url} - *%{user}*님이 일감(%{url})을 만들었습니다."
-  label_messenger_issue_updated: "%{project_url} - *%{user}*님이 일감(%{url})을 수정했습니다."
-  label_messenger_outgoing_webhook: 웹훅 발신
-  label_messenger_project_text_field_info: 시스템 기본값을 사용하려면 빈 값으로 두세요.
-  label_messenger_setting: 메신저 설정
-  label_messenger_settings_disabled: 비활성화
-  label_messenger_settings_enabled: 활성화
-  label_messenger_wiki_created: "%{project_url} - *%{user}*님이 위키(%{url})를 만들었습니다."
-  label_messenger_wiki_updated: "%{project_url} - *%{user}*님이 위키(%{url})를 수정했습니다."
-  label_messenger: 메신저
-  label_settings_auto_mentions: 이름을 멘션으로 변환
+  label_mattermost: Mattermost
+  label_mattermost_connection: Mattermost 연결
+  label_mattermost_destination: 대상
+  label_mattermost_issue_created: "%{project_url} - %{user}님이 일감(%{url})을 만들었습니다."
+  label_mattermost_issue_updated: "%{project_url} - %{user}님이 일감(%{url})을 수정했습니다."
+  label_mattermost_mentions: "받는 사람: %{names}"
+  label_mattermost_project_text_field_info: 기본값을 사용하려면 빈 값으로 두세요.
+  label_mattermost_settings_disabled: 비활성화
+  label_mattermost_settings_enabled: 활성화
+  label_mattermost_wiki_created: "%{project_url} - %{user}님이 위키(%{url})를 만들었습니다."
+  label_mattermost_wiki_updated: "%{project_url} - %{user}님이 위키(%{url})를 수정했습니다."
+  label_settings_auto_mentions: Redmine 멘션을 Mattermost 멘션으로 변환
   label_settings_default_mentions: 멘션될 기본 사용자
+  label_settings_direct_messages: 다이렉트 메시지 보내기
   label_settings_display_watchers: 지켜보는 사용자들을 보여줌
-  label_settings_messenger_channel: 메신저 채널
-  label_settings_messenger_icon: 메신저 아이콘
-  label_settings_messenger_url: 메신저 URL
-  label_settings_messenger_username: 메신저 사용자 이름
-  label_settings_messenger_verify_ssl: SSL
-  label_settings_new_include_description: 새로운 이슈의 설명을 포함
+  label_settings_mattermost_bot_token: 봇 액세스 토큰
+  label_settings_mattermost_channel: 채널
+  label_settings_mattermost_team: 팀
+  label_settings_mattermost_url: Mattermost 서버 URL
+  label_settings_mattermost_verify_ssl: SSL 인증서 확인
+  label_settings_new_include_description: 새로운 일감의 설명을 포함
+  label_settings_post_as_actor: "작업한 사용자로 게시"
   label_settings_post_private_issues: 비공개 일감을 포함
   label_settings_post_private_notes: 비공개 노트를 포함
   label_settings_post_updates: 일감 수정
-  label_settings_post_updates_reopened: 재개된 티켓에 대한 업데이트만 포함
-  label_settings_post_wiki_updates: 위키 수정
+  label_settings_post_updates_reopened: 재개된 일감에 대한 수정만 포함
   label_settings_post_wiki: 위키 추가
+  label_settings_post_wiki_updates: 위키 수정
   label_settings_updated_include_description: 수정된 일감의 설명을 포함
-  messenger_channel_info_html: '메시지를 보낼 채널들을 선택합니다. 쉼표로 구분하여 여러 채널을 선택할 수 있습니다.'
-  messenger_issue_intro: 사전에 정의된 메신저 채널로 일감의 변경 사항을 보냅니다.
-  messenger_settings_intro: "레드마인에서 메신저로 메시지를 보내지 않으려면 플러그인 관리 페이지에서 메신저 URL을 빈 값으로 둡니다. 여기에서 설정을 하면 모든 레드마인 프로젝트의 메시지들이 여기에서 설정된 URL의 지정된 채널로 전달됩니다. 일부 프로젝트에 대해서만 전달되게 하고 싶다면 여기에선 URL을 빈 값으로 두고 각 프로젝트에서 설정합니다."
-  messenger_settings_project_intro: "플러그인 관리 페이지에서 메신저 URL을 빈 값으로 두면 각 프로젝트 설정에서 메신저 URL을 설정함으로써 모든 프로젝트의 변경을 전역적으로 수신하지 않게 됩니다."
-  messenger_url_info_html: '메신저 서비스에서 <a target="_blank" href="https://github.com/smartorigin/redmine_messenger_so#prepare-your-messenger-service">Incoming WebHook</a> URL을 만드세요. 전역 설정을 따르려면 빈 값으로 둡니다.'
-  messenger_verify_ssl_info_html: '메신저 서비스가 유효하지 않거나 자가 서명된 SSL 인증서를 사용한다면 비활성화하세요.'
-  messenger_wiki_intro: 사전에 정의된 메신저 채널로 위키의 변경 사항을 보냅니다.
-  permission_manage_messenger: 메신저 관리
+  mattermost_bot_token_env_info: 환경 변수 %{name}에서 제공됩니다.
+  mattermost_bot_token_info: 봇 계정의 액세스 토큰입니다. 환경 변수 %{name}이(가) 설정되어 있으면 이 값보다 우선합니다.
+  mattermost_channel_info: "URL에 표시되는 채널 이름을 쉼표로 구분하여 입력합니다. @사용자이름은 다이렉트 메시지를 보내고, -는 전송을 비활성화합니다."
+  mattermost_default_mentions_info: "알림을 받을 기본 사용자를 나타내며, 쉼표로 구분 (예: @all, @here)"
+  mattermost_direct_messages_info: Redmine이 알림을 보내는 각 사용자에게 다이렉트 메시지도 보냅니다. Mattermost 사용자 이름은 Redmine 로그인과 같아야 합니다.
+  mattermost_issue_intro: Mattermost로 보낼 일감 이벤트를 선택합니다.
+  mattermost_post_as_actor_info: "Redmine에서 작업한 Mattermost 사용자로 서버 플러그인 %{plugin_id} (mattermost-plugin 디렉터리)를 통해 메시지를 게시합니다. 사용자를 찾을 수 없거나 채널에 쓸 수 없거나 플러그인이 응답하지 않으면 봇이 게시합니다."
+  mattermost_settings_intro: "메시지는 Mattermost 봇 계정으로 게시됩니다. 서버 URL이나 토큰을 빈 값으로 두면 알림이 전송되지 않습니다. 여기에서 설정한 팀과 채널은 모든 프로젝트에 적용되며, 각 프로젝트 설정에서 변경할 수 있습니다."
+  mattermost_settings_project_intro: 빈 값은 상위 프로젝트, 그다음 전역 설정에서 상속됩니다.
+  mattermost_team_info: URL에 표시되는 팀 이름으로, 채널을 찾는 데 사용됩니다.
+  mattermost_url_info: "Mattermost 서버의 기본 URL (예: https://chat.example.com)"
+  mattermost_verify_ssl_info: Mattermost 서버가 유효하지 않거나 자가 서명된 인증서를 사용한다면 비활성화하세요.
+  mattermost_wiki_intro: Mattermost로 보낼 위키 이벤트를 선택합니다.
+  permission_manage_mattermost: Mattermost 알림 관리

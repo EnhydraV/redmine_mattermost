@@ -1,38 +1,45 @@
 # Japanese strings
 ja:
-  default_mentionsl_info: Default people to notify, comma separated (e.g. @all, @here)
-  label_messenger_default_not_visible: デフォルトの設定はセキュリティ上の理由により表示されません。
-  label_messenger_issue_created: "%{project_url} - チケット %{url} が *%{user}* によって作成されました。"
-  label_messenger_issue_updated: "%{project_url} - チケット %{url} が *%{user}* によって更新されました。"
-  label_messenger_outgoing_webhook: Outgoing Webhook
-  label_messenger_project_text_field_info: デフォルトの設定を使う場合空欄にしてください。
-  label_messenger_setting: メッセンジャーの設定
-  label_messenger_settings_disabled: 無効
-  label_messenger_settings_enabled: 有効
-  label_messenger_wiki_created: "%{project_url} - Wiki %{url} が by *%{user}* によって作成されました。"
-  label_messenger_wiki_updated: "%{project_url} - Wiki %{url} が *%{user}* によって更新されました。"
-  label_messenger: メッセンジャー
-  label_settings_auto_mentions: ユーザー名をその人についての投稿(@ユーザー名)に変換する
-  label_settings_default_mentions: Default people for mentions
+  label_mattermost: Mattermost
+  label_mattermost_connection: Mattermostへの接続
+  label_mattermost_destination: 送信先
+  label_mattermost_issue_created: "%{project_url} - チケット %{url} が %{user} によって作成されました。"
+  label_mattermost_issue_updated: "%{project_url} - チケット %{url} が %{user} によって更新されました。"
+  label_mattermost_mentions: "宛先: %{names}"
+  label_mattermost_project_text_field_info: デフォルトの設定を使う場合空欄にしてください。
+  label_mattermost_settings_disabled: 無効
+  label_mattermost_settings_enabled: 有効
+  label_mattermost_wiki_created: "%{project_url} - Wiki %{url} が %{user} によって作成されました。"
+  label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} が %{user} によって更新されました。"
+  label_settings_auto_mentions: RedmineのメンションをMattermostのメンションに変換する
+  label_settings_default_mentions: デフォルトのメンション先
+  label_settings_direct_messages: ダイレクトメッセージを送信する
   label_settings_display_watchers: ウォッチャーを表示する
-  label_settings_messenger_channel: メッセンジャーのチャンネル
-  label_settings_messenger_icon: メッセンジャーのアイコン
-  label_settings_messenger_url: メッセンジャーのURL
-  label_settings_messenger_username: メッセンジャーのユーザー名
-  label_settings_messenger_verify_ssl: SSL証明書の検証
+  label_settings_mattermost_bot_token: Botのアクセストークン
+  label_settings_mattermost_channel: チャンネル
+  label_settings_mattermost_team: チーム
+  label_settings_mattermost_url: MattermostサーバーのURL
+  label_settings_mattermost_verify_ssl: SSL証明書の検証
   label_settings_new_include_description: チケット作成時に説明を含める
+  label_settings_post_as_actor: "操作したユーザーとして投稿する"
   label_settings_post_private_issues: プライベートチケットの更新
   label_settings_post_private_notes: プライベート注記の更新
   label_settings_post_updates: チケットの更新
   label_settings_post_updates_reopened: 再開されたチケットのみの更新を含める
-  label_settings_post_wiki_updates: Wikiの更新
   label_settings_post_wiki: Wikiの作成
+  label_settings_post_wiki_updates: Wikiの更新
   label_settings_updated_include_description: チケット更新時に説明を含める
-  messenger_channel_info_html: チャンネルを指定する必要があります。複数のチャンネルを指定する場合は,(カンマ)で区切って下さい。
-  messenger_issue_intro: メッセンジャーに送信するチケットのイベントにチェックを入れて下さい。
-  messenger_settings_intro: 管理画面でメッセンジャーのURLを指定した場合、全てのプロジェクトのデフォルトの送信先になります。プロジェクト毎の送信先を設定する場合はプロジェクトの設定画面で設定して下さい。
-  messenger_settings_project_intro: メッセンジャーのURLを指定しない場合、管理者が指定したチャンネルにメッセージが送信されます。(管理者がチャンネルを指定していない場合は、空欄にすると機能は無効になります)
-  messenger_url_info_html: 'メッセンジャー サービスで <a target="_blank" href="https://github.com/smartorigin/redmine_messenger_so#prepare-your-messenger-service">内向きのウェブフック</a>のURLを作成して下さい。プロジェクト毎に設定を変えたい場合は空欄として下さい。'
-  messenger_verify_ssl_info_html: 'メッセンジャー サービスが自己署名証明書や不正な証明書を使っている場合、無効として下さい。'
-  messenger_wiki_intro: メッセンジャーに送信するWikiのイベントにチェックを入れて下さい。
-  permission_manage_messenger: メッセンジャーの管理
+  mattermost_bot_token_env_info: 環境変数 %{name} で設定されています。
+  mattermost_bot_token_info: Botアカウントのアクセストークンです。環境変数 %{name} が設定されている場合はそちらが優先されます。
+  mattermost_channel_info: "URLに表示されるチャンネル名を,(カンマ)区切りで指定して下さい。@ユーザー名 はダイレクトメッセージを送信し、- は送信を無効にします。"
+  mattermost_default_mentions_info: "デフォルトで通知する相手を,(カンマ)区切りで指定して下さい(例: @all, @here)"
+  mattermost_direct_messages_info: Redmineが通知する各ユーザーにもダイレクトメッセージを送信します。Mattermostのユーザー名はRedmineのログインIDと同じである必要があります。
+  mattermost_issue_intro: Mattermostに送信するチケットのイベントを選択して下さい。
+  mattermost_post_as_actor_info: "Redmineで操作したMattermostユーザーとして、サーバープラグイン %{plugin_id} (mattermost-plugin ディレクトリ) 経由でメッセージを投稿します。ユーザーが見つからない場合、チャンネルに投稿できない場合、またはプラグインが応答しない場合はBotが投稿します。"
+  mattermost_settings_intro: "メッセージはMattermostのBotアカウントから投稿されます。サーバーのURLまたはトークンが空欄の場合、通知は送信されません。ここで指定したチームとチャンネルは全てのプロジェクトに適用され、プロジェクトの設定画面で上書きできます。"
+  mattermost_settings_project_intro: 空欄の項目は親プロジェクト、次に全体の設定から引き継がれます。
+  mattermost_team_info: URLに表示されるチーム名です。チャンネルの検索に使用されます。
+  mattermost_url_info: "MattermostサーバーのベースURL(例: https://chat.example.com)"
+  mattermost_verify_ssl_info: Mattermostサーバーが自己署名証明書や不正な証明書を使っている場合、無効として下さい。
+  mattermost_wiki_intro: Mattermostに送信するWikiのイベントを選択して下さい。
+  permission_manage_mattermost: Mattermost通知の管理

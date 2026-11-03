@@ -1,39 +1,45 @@
 # French strings
 fr:
-  default_mentionsl_info: Personnes à notifier par défaut, séparées par des virgules (@all, @here)
-  label_messenger_default_not_visible: Le paramètre par défaut n'est pas visible pour des raisons de sécurité
-  label_messenger_issue_created: "%{project_url} - Ticket %{url} créé par *%{user}*"
-  label_messenger_issue_updated: "%{project_url} - Ticket %{url} mis à jour par *%{user}*"
-  label_messenger_outgoing_webhook: Webhook sortant
-  label_messenger_project_text_field_info: Laissez ce champ vide pour le système par défaut.
-  label_messenger_setting: Paramètres de messagerie
-  label_messenger_settings_disabled: Désactivé
-  label_messenger_settings_enabled: Activé
-  label_messenger_wiki_created: "%{project_url} - Wiki %{url} créé par *%{user}*"
-  label_messenger_wiki_updated: "%{project_url} - Wiki %{url} mis à jour par *%{user}*"
-  label_messenger: Messenger
-  label_settings_auto_mentions: Convertir les noms en mentions
+  label_mattermost: Mattermost
+  label_mattermost_connection: Connexion à Mattermost
+  label_mattermost_destination: Destination
+  label_mattermost_issue_created: "%{project_url} - Ticket %{url} créé par %{user}"
+  label_mattermost_issue_updated: "%{project_url} - Ticket %{url} mis à jour par %{user}"
+  label_mattermost_mentions: "Pour : %{names}"
+  label_mattermost_project_text_field_info: Laisser vide pour hériter de la valeur par défaut.
+  label_mattermost_settings_disabled: Désactivé
+  label_mattermost_settings_enabled: Activé
+  label_mattermost_wiki_created: "%{project_url} - Wiki %{url} créé par %{user}"
+  label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} mis à jour par %{user}"
+  label_settings_auto_mentions: Convertir les mentions Redmine en mentions Mattermost
   label_settings_default_mentions: Personnes mentionnées par défaut
+  label_settings_direct_messages: Envoyer des messages directs
   label_settings_display_watchers: Afficher les observateurs du ticket
-  label_settings_messenger_channel: Nom du salon
-  label_settings_messenger_icon: Icône affiché
-  label_settings_messenger_url: URL WebHook entrant
-  label_settings_messenger_username: Nom du robot
-  label_settings_messenger_verify_ssl: Vérifier SSL
-  label_settings_messenger_direct_users_messages: Envoyer des messages directs
+  label_settings_mattermost_bot_token: Jeton d'accès du bot
+  label_settings_mattermost_channel: Canaux
+  label_settings_mattermost_team: Équipe
+  label_settings_mattermost_url: URL du serveur Mattermost
+  label_settings_mattermost_verify_ssl: Vérifier SSL
   label_settings_new_include_description: Inclure la description des nouveaux tickets
+  label_settings_post_as_actor: "Publier au nom de l'utilisateur"
   label_settings_post_private_issues: Inclure les mises à jour des tickets privés
   label_settings_post_private_notes: Inclure les mises à jour des notes privées
   label_settings_post_updates: Inclure toutes les mises à jour
   label_settings_post_updates_reopened: Inclure les mises à jour pour les tickets réouverts uniquement
+  label_settings_post_wiki: Inclure les créations de pages wiki
   label_settings_post_wiki_updates: Inclure les mises à jour du wiki
-  label_settings_post_wiki: Inclure les publications du wiki
   label_settings_updated_include_description: Inclure la description suite à une mise à jour
-  messenger_channel_info_html: 'Spécifier le canal à utiliser. Vous pouvez définir plusieurs canaux, séparés par une virgule.'
-  messenger_issue_intro: Activer les modifications pour les tickets à envoyer au canal Messenger prédéfini.
-  messenger_settings_intro: "Laisser l'URL de Messenger dans la zone d'administration vide pour ne pas envoyer de messages de Redmine à Messenger. Peu importe ce que vous avez configuré ici. Si vous souhaitez envoyer des messages de tous les projets Redmine à Messenger, renseignez l’URL. Les messages seront envoyés au canal spécifique. Si vous souhaitez uniquement être averti par certains des projets (pas tous), laissez l'URL du messager ici vide et accédez à la configuration du projet spécifique."
-  messenger_settings_project_intro: "Si vous laissez vide l'URL de Messenger dans la zone d'administration au cas où vous ne seriez pas averti globalement de toutes les modifications apportées au projet, vous pouvez configurer votre URL Messenger dans les paramètres du projet."
-  messenger_url_info_html: 'Générer une adresse <a target="_blank" href="https://github.com/smartorigin/redmine_messenger_so#prepare-your-messenger-service">Incoming WebHook</a> pour le service global de Messenger. Laisser ce champ vide pour activer uniquement des projets spécifiques avec des paramètres personnalisés pour chaque projet.'
-  messenger_verify_ssl_info_html: 'Désactiver cette vérification si votre service Messenger utilise un certificat SSL non valide ou auto-signé.'
-  messenger_wiki_intro: Activer les notifications a envoyer au canal Messenger pour l'ensemble des wikis.
-  permission_manage_messenger: Gérer Messenger
+  mattermost_bot_token_env_info: Fourni par la variable d'environnement %{name}.
+  mattermost_bot_token_info: Jeton d'accès du compte bot. La variable d'environnement %{name}, si elle est définie, a priorité sur ce champ.
+  mattermost_channel_info: "Noms des canaux tels qu'ils apparaissent dans leur URL, séparés par des virgules. @utilisateur envoie un message direct, - désactive l'envoi."
+  mattermost_default_mentions_info: "Personnes à notifier par défaut, séparées par des virgules (@all, @here)"
+  mattermost_direct_messages_info: Envoie aussi un message direct à chaque utilisateur notifié par Redmine. Le nom d'utilisateur Mattermost doit être identique à l'identifiant Redmine.
+  mattermost_issue_intro: Choisir les événements de ticket publiés dans Mattermost.
+  mattermost_post_as_actor_info: "Publie chaque message sous l'identité Mattermost de l'utilisateur qui a agi dans Redmine, via le plugin serveur %{plugin_id} (dossier mattermost-plugin). Le bot publie à sa place si l'utilisateur est inconnu ou ne peut pas écrire dans le canal, ou si le plugin ne répond pas."
+  mattermost_settings_intro: "Les messages sont publiés par un compte bot Mattermost. Laisser l'URL du serveur ou le jeton vide pour désactiver toutes les notifications. L'équipe et les canaux définis ici s'appliquent à tous les projets, et chaque projet peut les surcharger dans ses paramètres."
+  mattermost_settings_project_intro: Les valeurs laissées vides sont héritées du projet parent, puis des paramètres globaux.
+  mattermost_team_info: Nom de l'équipe tel qu'il apparaît dans son URL, utilisé pour retrouver les canaux.
+  mattermost_url_info: "URL de base du serveur Mattermost, par exemple https://chat.example.com"
+  mattermost_verify_ssl_info: Désactiver cette vérification si le serveur Mattermost utilise un certificat invalide ou auto-signé.
+  mattermost_wiki_intro: Choisir les événements du wiki publiés dans Mattermost.
+  permission_manage_mattermost: Gérer les notifications Mattermost
