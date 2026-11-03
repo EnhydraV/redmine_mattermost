@@ -42,6 +42,9 @@ Prises pendant l'implémentation (révisables) :
 - L'image Redmine de prod est construite par le dépôt `docker-images` (dossier `redmine/`, CI Forgejo) : plugins clonés depuis `redmine/plugins.list` (branche par défaut, `--depth 1`), `REDMINE_PLUGINS_MIGRATE: 1` dans le compose, donc les migrations des plugins tournent à chaque démarrage.
 - La prod utilise `redmine_messenger` d'AlphaNodes (webhook entrant), pas le fork Smart/Origin. Le 2026-11-03, le worktree de `docker-images` remplace cette ligne par `redmine_mattermost` (modification de Vincent, non commitée à ce moment-là).
 - L'ancien plugin sort de l'image sans sa migration de désinstallation : la table `messenger_settings` reste, la migration 002 la reprend au démarrage.
+- Prod lue le 2026-11-03 (hotfuzz, `root@hotfuzz.cubedesigners.com`, conteneur `redmine-mariadb`, lecture seule) : 86 lignes dans `messenger_settings` (migrations AlphaNodes 1 à 4), aucun webhook propre à un projet, salons tous au format accepté, options toutes à 0 (hérité). Global `plugin_redmine_messenger` : webhook sur `mm.cubedesigners.com`, salon par défaut `redmine-test`, mentions auto, observateurs, descriptions.
+- Piège trouvé en prod : un `plugin_redmine_mattermost` du 2016-10-14, laissé par l'ancien plugin altsol (webhook `slack.cubedesigners.com`, sérialisé en `ActionController::Parameters`). La migration 002 sautait l'import global en le voyant. Corrigée : un réglage sans clé `mattermost_team` n'est pas de ce plugin et est remplacé (import, sinon défauts) ; les `ActionController::Parameters` sont lus par `to_unsafe_h` ; l'URL du serveur est déduite du webhook (`.../hooks/...`). 6 tests (`test/unit/import_messenger_settings_test.rb`, schéma AlphaNodes).
+- Après déploiement : l'équipe reste à saisir ; le bot doit pouvoir publier dans les ~60 salons (droit "publier dans tous les canaux publics", et membre des canaux privés).
 - Aucun serveur Mattermost ni plugin Mattermost dans `docker-images` : le plugin `com.cubedesigners.redmine` s'installe à la main sur le serveur Mattermost (archive des releases GitHub de `EnhydraV/mattermost-plugin-redmine`, ou `make dist`).
 - Le jeton du bot n'est pas encore câblé : à ajouter dans `redmine/docker-compose.yml` (`REDMINE_MATTERMOST_BOT_TOKEN`), `redmine/.env.example` et la note Bitwarden `docker-images/redmine`.
 
@@ -84,7 +87,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 ## Tests et outillage
 
 - Redmine de test : `$SUPERCLAUDE_SCRATCH/redmine-env/redmine-7.0.1` (SQLite, gems dans `vendor/bundle`, lien symbolique `plugins/redmine_mattermost` -> projet, base de test migrée). Commande : `RAILS_ENV=test bundle exec rake redmine:plugins:test NAME=redmine_mattermost RUBYOPT='-W0'` depuis ce dossier.
-- Résultat au 2026-11-03 : 62 tests, 222 assertions, 0 échec (Redmine 7.0.1, Ruby 3.3.8).
+- Résultat au 2026-11-03 : 68 tests, 239 assertions, 0 échec (Redmine 7.0.1, Ruby 3.3.8).
 - Redmine force l'adaptateur ActiveJob `:inline` en test, que `ActiveJob::TestHelper` respecte depuis Rails 7.2 : `RedmineMattermost::TestHelper` surcharge `queue_adapter_for_test`.
 - Relais : 13 tests Go (`plugintest.API`) dans `mattermost-plugin-redmine` (`server/relay_test.go`), golangci-lint du projet propre.
 - RuboCop (bundle de Redmine, sans `rubocop-minitest` qui n'y est pas) : seules restent 2 alertes `Layout/EndOfLine` sur `test/unit/issue_test.rb` et `project_test.rb`, dues au CRLF du checkout Windows. Config temporaire : `.rubocop.yml` débarrassé de ses CR et des cops Minitest.
