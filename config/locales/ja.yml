@@ -35,7 +35,7 @@ ja:
   mattermost_default_mentions_info: "デフォルトで通知する相手を,(カンマ)区切りで指定して下さい(例: @all, @here)"
   mattermost_direct_messages_info: Redmineが通知する各ユーザーにもダイレクトメッセージを送信します。Mattermostのユーザー名はRedmineのログインIDと同じである必要があります。
   mattermost_issue_intro: Mattermostに送信するチケットのイベントを選択して下さい。
-  mattermost_post_as_actor_info: "Redmineで操作したMattermostユーザーとして、サーバープラグイン %{plugin_id} (mattermost-plugin ディレクトリ) 経由でメッセージを投稿します。ユーザーが見つからない場合、チャンネルに投稿できない場合、またはプラグインが応答しない場合はBotが投稿します。"
+  mattermost_post_as_actor_info: "Redmineで操作したMattermostユーザーとして、サーバープラグイン %{plugin_id} (mattermost-plugin-redmine) 経由でメッセージを投稿します。ユーザーが見つからない場合、チャンネルに投稿できない場合、またはプラグインが応答しない場合はBotが投稿します。"
   mattermost_settings_intro: "メッセージはMattermostのBotアカウントから投稿されます。サーバーのURLまたはトークンが空欄の場合、通知は送信されません。ここで指定したチームとチャンネルは全てのプロジェクトに適用され、プロジェクトの設定画面で上書きできます。"
   mattermost_settings_project_intro: 空欄の項目は親プロジェクト、次に全体の設定から引き継がれます。
   mattermost_team_info: URLに表示されるチーム名です。チャンネルの検索に使用されます。

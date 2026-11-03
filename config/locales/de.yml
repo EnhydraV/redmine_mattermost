@@ -35,7 +35,7 @@ de:
   mattermost_default_mentions_info: "Benutzer, die immer mit Mentions benachrichtigt werden sollen, durch Komma getrennt (z.B. @all, @here)."
   mattermost_direct_messages_info: Sendet zusätzlich jedem von Redmine benachrichtigten Benutzer eine Direktnachricht. Der Mattermost-Benutzername muss dem Redmine-Login entsprechen.
   mattermost_issue_intro: Legen Sie fest, welche Ticket-Ereignisse an Mattermost gesendet werden.
-  mattermost_post_as_actor_info: "Veröffentlicht jede Nachricht als der Mattermost-Benutzer, der in Redmine gehandelt hat, über das Server-Plugin %{plugin_id} (Verzeichnis mattermost-plugin). Ist der Benutzer unbekannt, darf er im Kanal nicht schreiben oder antwortet das Plugin nicht, postet der Bot."
+  mattermost_post_as_actor_info: "Veröffentlicht jede Nachricht als der Mattermost-Benutzer, der in Redmine gehandelt hat, über das Server-Plugin %{plugin_id} (mattermost-plugin-redmine). Ist der Benutzer unbekannt, darf er im Kanal nicht schreiben oder antwortet das Plugin nicht, postet der Bot."
   mattermost_settings_intro: "Die Nachrichten werden von einem Mattermost-Bot-Konto gesendet. Bleiben Server-URL oder Token leer, werden keine Nachrichten verschickt. Team und Kanäle gelten hier für alle Projekte und können in jedem Projekt überschrieben werden."
   mattermost_settings_project_intro: Leere Werte werden vom übergeordneten Projekt und danach von den globalen Einstellungen übernommen.
   mattermost_team_info: Teamname wie in seiner URL, wird zum Auffinden der Kanäle verwendet.

@@ -35,7 +35,7 @@ nl:
   mattermost_default_mentions_info: "Standaard gebruikers om op de hoogte te stellen, gescheiden door een komma (bijv. @all, @here)"
   mattermost_direct_messages_info: Stuurt ook een direct bericht naar elke gebruiker die Redmine op de hoogte stelt. De Mattermost-gebruikersnaam moet gelijk zijn aan de Redmine-login.
   mattermost_issue_intro: Kies welke issue-gebeurtenissen naar Mattermost worden gestuurd.
-  mattermost_post_as_actor_info: "Plaatst elk bericht als de Mattermost-gebruiker die in Redmine handelde, via de serverplugin %{plugin_id} (map mattermost-plugin). De bot plaatst het bericht als de gebruiker onbekend is, niet in het kanaal mag schrijven, of als de plugin niet antwoordt."
+  mattermost_post_as_actor_info: "Plaatst elk bericht als de Mattermost-gebruiker die in Redmine handelde, via de serverplugin %{plugin_id} (mattermost-plugin-redmine). De bot plaatst het bericht als de gebruiker onbekend is, niet in het kanaal mag schrijven, of als de plugin niet antwoordt."
   mattermost_settings_intro: "De berichten worden geplaatst door een Mattermost-botaccount. Laat de server-URL of het token leeg om alle meldingen uit te schakelen. Het team en de kanalen die hier zijn ingesteld gelden voor alle projecten, en elk project kan ze in zijn instellingen overschrijven."
   mattermost_settings_project_intro: Lege waarden worden overgenomen van het bovenliggende project en daarna van de globale instellingen.
   mattermost_team_info: Teamnaam zoals in zijn URL, gebruikt om de kanalen te vinden.

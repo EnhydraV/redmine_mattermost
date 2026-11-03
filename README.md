@@ -49,17 +49,11 @@ Each project can override these settings in *Settings > Mattermost* (permission 
 
 ## Posting as the acting user (optional)
 
-With the server plugin in `mattermost-plugin/`, messages are published as the Mattermost user who acted in Redmine. Mattermost never notifies people of their own posts, so nobody is notified of what they just did in Redmine.
+With the Mattermost plugin [mattermost-plugin-redmine](https://github.com/EnhydraV/mattermost-plugin-redmine) (id `com.cubedesigners.redmine`), messages are published as the Mattermost user who acted in Redmine. Mattermost never notifies people of their own posts, so nobody is notified of what they just did in Redmine. The same plugin adds a "Create a Redmine issue" action to Mattermost messages.
 
-1. Build the plugin bundle (Go is required; the Makefile selects the Go 1.26 toolchain used by Mattermost):
-
-       cd mattermost-plugin
-       make bundle
-
-   The bundle is written to `mattermost-plugin/dist/com.github.enhydrav.redmine-mattermost-<version>.tar.gz`.
-2. In the System Console, *Plugins > Plugin Management*, upload the bundle (plugin uploads must be enabled) and enable the *Redmine relay* plugin.
-3. In the plugin settings, set **Redmine bot account** to the username of the bot used by Redmine. Requests authenticated with any other account are refused.
-4. In Redmine, check **Post as the acting user** in the plugin settings.
+1. Install the plugin on the Mattermost server: download its bundle from the GitHub releases (or build it with `make dist`), upload it in the System Console, *Plugins > Plugin Management* (plugin uploads must be enabled), and enable it.
+2. In the plugin settings, set **Relais : compte bot de Redmine** to the username of the bot used by Redmine. The relay is disabled while this setting is empty, and requests authenticated with any other account are refused.
+3. In Redmine, check **Post as the acting user** in the plugin settings.
 
 The Mattermost user is the one whose username is the Redmine login, or, failing that, the one with the same email address (this lookup can be disabled in the plugin settings). A message is posted by that user when they are allowed to post in the channel, and direct messages are sent from that user to the recipient. Otherwise the bot posts, as it does when the server plugin does not answer.
 
@@ -98,11 +92,6 @@ Linting requires a `.enable_dev` file in the plugin directory (see `Gemfile`):
 
     bundle exec rubocop -S
     bundle exec slim-lint app/views
-
-The Mattermost server plugin has its own tests:
-
-    cd mattermost-plugin
-    make test
 
 ## License
 

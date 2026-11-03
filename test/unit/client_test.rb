@@ -48,7 +48,7 @@ class ClientTest < ActiveSupport::TestCase
   def test_relay_post_targets_the_server_plugin
     http = mock 'http'
     http.expects(:request).with do |request|
-      request.path == '/plugins/com.github.enhydrav.redmine-mattermost/api/v1/posts' &&
+      request.path == '/plugins/com.cubedesigners.redmine/api/v1/posts' &&
         request['Authorization'] == 'Bearer bot-token' &&
         JSON.parse(request.body) == { 'target' => { 'username' => 'juliette' },
                                       'actor' => { 'username' => 'charlie', 'email' => 'charlie@example.com' },

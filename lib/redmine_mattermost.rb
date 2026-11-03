@@ -6,8 +6,8 @@ module RedmineMattermost
   # Variable d'environnement prioritaire sur le jeton saisi dans l'administration
   BOT_TOKEN_ENV = 'REDMINE_MATTERMOST_BOT_TOKEN'
 
-  # Plugin serveur Mattermost (dossier mattermost-plugin/) qui publie au nom de l'utilisateur
-  RELAY_PLUGIN_ID = 'com.github.enhydrav.redmine-mattermost'
+  # Plugin serveur Mattermost (dépôt EnhydraV/mattermost-plugin-redmine) qui publie au nom de l'utilisateur
+  RELAY_PLUGIN_ID = 'com.cubedesigners.redmine'
 
   include RedminePluginKit::PluginBase
 

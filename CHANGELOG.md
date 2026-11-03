@@ -29,9 +29,10 @@ Changelog
     - Checkboxes of the global settings page now reflect default values
     - Displaying the project tab no longer creates a database record
 - Delivery job retries network errors and HTTP 429/5xx twice
-- Optional Mattermost server plugin (mattermost-plugin/, id com.github.enhydrav.redmine-mattermost):
-  with the new "Post as the acting user" setting, messages are published as the Mattermost user
-  who acted in Redmine (same username, or same email), the bot posting otherwise
+- "Post as the acting user" setting: with the Mattermost plugin
+  [mattermost-plugin-redmine](https://github.com/EnhydraV/mattermost-plugin-redmine) (id
+  com.cubedesigners.redmine), messages are published as the Mattermost user who acted in Redmine
+  (same username, or same email), the bot posting otherwise
 - The acting user is never mentioned in the message
 
 1.1.2

@@ -15,8 +15,8 @@ Validées par Vincent (2026-11-03) :
 - Identifiant du plugin : `redmine_mattermost` (module `RedmineMattermost`).
 - Connexion par compte bot et API REST v4, dès l'étape 1.
 - Serveur Mattermost minimal : 12.0. Mattermost de Vincent : auto-hébergé, Vincent en est l'admin.
-- Publier au nom de l'utilisateur qui agit (pour qu'il ne soit pas notifié de ses propres actions) : par un plugin serveur Mattermost relais, dans le sous-dossier `mattermost-plugin/` de ce dépôt.
-- Aucune CI : les tests se lancent en local (Redmine et `make test`), l'archive du plugin Mattermost se construit avec `make bundle`. `Jenkinsfile` et `old_dot_github/` supprimés.
+- Publier au nom de l'utilisateur qui agit (pour qu'il ne soit pas notifié de ses propres actions) : par le relais du plugin Mattermost `com.cubedesigners.redmine` (dépôt `EnhydraV/mattermost-plugin-redmine`, qui porte aussi l'action "Créer un ticket Redmine"). Le relais a d'abord été écrit dans le sous-dossier `mattermost-plugin/` de ce dépôt (commit `0c6716b`), puis fusionné dans ce plugin le 2026-11-03 : un seul plugin Mattermost pour Redmine.
+- Aucune CI pour ce dépôt : les tests Redmine se lancent en local. `Jenkinsfile` et `old_dot_github/` supprimés. Le dépôt du plugin Mattermost garde sa propre CI GitHub (release-please, bundle attaché aux releases).
 
 Prises pendant l'implémentation (révisables) :
 
@@ -28,7 +28,7 @@ Prises pendant l'implémentation (révisables) :
 - Les 7 langues sont conservées.
 - Migration 002 : reprise des réglages de `redmine_messenger` / `redmine_messenger_so`, hors URL de webhook. L'ancienne table reste en place, le README donne le SQL de nettoyage.
 - Seuls les champs personnalisés visibles par tous sont publiés.
-- Version `2.0.0` pour le plugin Redmine comme pour le plugin Mattermost.
+- Version `2.0.0` pour le plugin Redmine. Le plugin Mattermost suit son propre semver.
 
 ## Origine du code
 
@@ -36,6 +36,14 @@ Prises pendant l'implémentation (révisables) :
 - Remote `origin` : https://github.com/EnhydraV/redmine_mattermost (hébergé sur GitHub : aucune référence de ticket Redmine ni temps passé dans les commits).
 - Point de départ : commit `7bb115d` "version 1.1.2" (2026-09-16), dernier commit amont de Smart/Origin.
 - Licence MIT.
+
+## Déploiement (Redmine Cubedesigners)
+
+- L'image Redmine de prod est construite par le dépôt `docker-images` (dossier `redmine/`, CI Forgejo) : plugins clonés depuis `redmine/plugins.list` (branche par défaut, `--depth 1`), `REDMINE_PLUGINS_MIGRATE: 1` dans le compose, donc les migrations des plugins tournent à chaque démarrage.
+- La prod utilise `redmine_messenger` d'AlphaNodes (webhook entrant), pas le fork Smart/Origin. Le 2026-11-03, le worktree de `docker-images` remplace cette ligne par `redmine_mattermost` (modification de Vincent, non commitée à ce moment-là).
+- L'ancien plugin sort de l'image sans sa migration de désinstallation : la table `messenger_settings` reste, la migration 002 la reprend au démarrage.
+- Aucun serveur Mattermost ni plugin Mattermost dans `docker-images` : le plugin `com.cubedesigners.redmine` s'installe à la main sur le serveur Mattermost (archive des releases GitHub de `EnhydraV/mattermost-plugin-redmine`, ou `make dist`).
+- Le jeton du bot n'est pas encore câblé : à ajouter dans `redmine/docker-compose.yml` (`REDMINE_MATTERMOST_BOT_TOKEN`), `redmine/.env.example` et la note Bitwarden `docker-images/redmine`.
 
 ## Architecture (2.0.0)
 
@@ -63,16 +71,13 @@ Destinations : `{ 'team' => ..., 'channel' => ... }` pour un canal, `{ 'username
 
 Modèle de réglages : champs texte vides = hérités ; options au niveau projet `0` = hérité, `1` = désactivé, `2` = activé ; canal `-` = aucun envoi.
 
-### Plugin serveur Mattermost (`mattermost-plugin/`, Go)
+### Relais (plugin Mattermost `com.cubedesigners.redmine`)
 
-- Identifiant `com.github.enhydrav.redmine-mattermost`, serveur seul (pas de webapp), `min_server_version` 12.0.0.
-- `POST /plugins/<id>/api/v1/posts` : `{ target, actor, post }`. `GET .../api/v1/status` : identifiant et version.
-- Authentification : la requête porte le jeton du bot Redmine ; le serveur Mattermost la valide et transmet `Mattermost-User-Id`, que le plugin compare au réglage "Redmine bot account" (`AllowedUsernames`).
-- Choix de l'auteur : l'utilisateur (par login, puis email) s'il a `create_post` sur le canal, sinon le bot s'il a ce droit, sinon 403. Message direct : canal direct utilisateur -> destinataire.
-- Les attachments reçus en JSON sont convertis en `[]*model.MessageAttachment`.
-- Dépendance `github.com/mattermost/mattermost/server/public` v0.4.3 (version embarquée par Mattermost 12.0.0).
-- Chaîne Go : 1.26.7 (`GOTOOLCHAIN` dans le Makefile). En Go 1.27, `golang.org/x/net/http2` exclut son ancien serveur (`//go:build !(go1.27 && !http2legacy)`) alors que `grpc` 1.81, tiré par l'API plugin, l'utilise encore : la compilation échoue.
-- `make test`, `make bundle` (archive amd64 + arm64 dans `mattermost-plugin/dist/`).
+- Dépôt `EnhydraV/mattermost-plugin-redmine` (Go + webapp React, `min_server_version` 12.0.0), qui porte aussi l'action "Créer un ticket Redmine" et la commande `/redmine link|unlink|status` (lien canal -> projet en KV). Relais ajouté sur la branche `feat/relais-notifications` (`server/relay.go`) ; son HANDOFF et son README le décrivent.
+- `POST /plugins/com.cubedesigners.redmine/api/v1/posts` : `{ target, actor, post }`. `GET .../api/v1/status` : identifiant et version.
+- Authentification : la requête porte le jeton du bot Redmine ; le serveur Mattermost la valide et transmet `Mattermost-User-Id`, que le plugin compare au réglage "Relais : compte bot de Redmine" (`RelayUsernames`, vide par défaut = relais désactivé).
+- Choix de l'auteur : l'utilisateur (par login, puis email si `RelayMatchByEmail`) s'il a `create_post` sur le canal, sinon le bot s'il a ce droit, sinon 403. Message direct : canal direct utilisateur -> destinataire.
+- API plugin `server/public` v0.4.3 (Mattermost 12.0.0), chaîne Go 1.26.7 imposée par le `Makefile` : en Go 1.27, grpc 1.81 ne compile pas (`golang.org/x/net/http2` exclut son ancien serveur, `//go:build !(go1.27 && !http2legacy)`).
 
 Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'importe quel `UserId` (`PluginAPI.CreatePost`, "trusted server surface") ; l'auteur d'un post n'est pas notifié (`notification.go`, sauf `from_webhook`) ; `override_username` n'est réinjecté que pour les webhooks entrants, donc inutilisable par un bot via l'API REST ; un post créé par plugin ne passe pas par `MarkChannelsAsViewed`.
 
@@ -81,7 +86,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Redmine de test : `$SUPERCLAUDE_SCRATCH/redmine-env/redmine-7.0.1` (SQLite, gems dans `vendor/bundle`, lien symbolique `plugins/redmine_mattermost` -> projet, base de test migrée). Commande : `RAILS_ENV=test bundle exec rake redmine:plugins:test NAME=redmine_mattermost RUBYOPT='-W0'` depuis ce dossier.
 - Résultat au 2026-11-03 : 62 tests, 222 assertions, 0 échec (Redmine 7.0.1, Ruby 3.3.8).
 - Redmine force l'adaptateur ActiveJob `:inline` en test, que `ActiveJob::TestHelper` respecte depuis Rails 7.2 : `RedmineMattermost::TestHelper` surcharge `queue_adapter_for_test`.
-- Plugin Go : 12 tests (`plugintest.API`), `go vet` et `gofmt` propres.
+- Relais : 13 tests Go (`plugintest.API`) dans `mattermost-plugin-redmine` (`server/relay_test.go`), golangci-lint du projet propre.
 - RuboCop (bundle de Redmine, sans `rubocop-minitest` qui n'y est pas) : seules restent 2 alertes `Layout/EndOfLine` sur `test/unit/issue_test.rb` et `project_test.rb`, dues au CRLF du checkout Windows. Config temporaire : `.rubocop.yml` débarrassé de ses CR et des cops Minitest.
 - slim-lint : pas lancé (gem absente du bundle de Redmine).
 - Semgrep (`p/ruby`, `p/security-audit`, `p/golang`) : un seul signalement, `VERIFY_NONE` dans `client.rb`, assumé (option "Vérifier SSL" décochable par l'admin, cochée par défaut).
@@ -89,6 +94,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 
 ## Reste à faire (étape 1)
 
+- Merger la branche `feat/relais-notifications` de `mattermost-plugin-redmine`, publier sa release et l'installer avant de cocher "Publier au nom de l'utilisateur".
 - Tester contre le vrai serveur Mattermost de Vincent : bot seul (canal public, privé, message direct), puis relais (post au nom de l'utilisateur, repli sur le bot, message direct).
 - Vérifier en réel si le canal apparaît non lu pour l'auteur d'un post créé par le relais.
 - Nettoyer les reliquats : `package.json`, `.stylelintrc.json`, `assets/*/.eslintignore`, `.stylelintignore`.
@@ -101,7 +107,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Mise à jour d'un message existant plutôt qu'un nouveau post.
 - Couleur de l'attachment selon le statut ou la priorité.
 - Autres événements : actualités, documents, versions, temps passé, relations entre tickets.
-- Commande slash Mattermost (`/redmine`) et boutons interactifs ; le plugin serveur est le bon endroit pour les accueillir.
+- Le plugin Mattermost a déjà `/redmine link` (canal -> projet en KV) : piste pour router les notifications d'un projet vers ses canaux liés. Boutons interactifs au même endroit.
 - Redmine 7 dispose de webhooks natifs (`app/jobs/webhook_job.rb`) : à regarder pour voir ce qu'ils couvrent.
 
 ## Points d'attention
@@ -123,4 +129,5 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Vérifié : 62 tests Redmine et 12 tests Go au vert, RuboCop, Semgrep, YAML des 7 langues (43 clés identiques).
 - Pas encore vérifié : envoi réel vers un serveur Mattermost, slim-lint.
 - Vincent n'a pas besoin de CI : `Jenkinsfile` et `old_dot_github/` supprimés, tâche CI retirée.
+- Relais fusionné dans `EnhydraV/mattermost-plugin-redmine` (branche `feat/relais-notifications`, à la demande de Vincent) : `RELAY_PLUGIN_ID` = `com.cubedesigners.redmine`, sous-dossier `mattermost-plugin/` supprimé, textes des 7 langues, README et CHANGELOG mis à jour.
 - Environnement : worktree en CRLF (index en LF), aucun `.gitattributes` ; `.idea/` non suivi et absent du `.gitignore`.
