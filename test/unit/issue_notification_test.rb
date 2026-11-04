@@ -138,6 +138,26 @@ class IssueNotificationTest < ActiveSupport::TestCase
     assert_not_includes mattermost_payloads.last['message'], '@dlopper'
   end
 
+  def test_mentioned_users_are_sent_for_conversion
+    issue = Issue.find 1
+    with_mattermost_settings 'auto_mentions' => '1' do
+      issue.init_journal User.find(2), 'Hello @dlopper'
+      issue.save!
+    end
+
+    assert_equal [{ 'login' => 'dlopper', 'email' => 'dlopper@somenet.foo' }], mattermost_payloads.last['mention_users']
+  end
+
+  def test_direct_message_targets_carry_the_email
+    issue = Issue.find 1
+    with_mattermost_settings 'direct_messages' => '1' do
+      issue.init_journal User.find(1), 'Ping'
+      issue.save!
+    end
+
+    assert_includes mattermost_deliveries.map(&:first), { 'username' => 'jsmith', 'email' => 'jsmith@somenet.foo' }
+  end
+
   def test_direct_messages_target_notified_users_except_actor
     issue = Issue.find 1
     with_mattermost_settings 'direct_messages' => '1' do
@@ -162,8 +182,54 @@ class IssueNotificationTest < ActiveSupport::TestCase
 
     field = attachment_fields(mattermost_payloads.last).detect { |f| f['title'] == 'Revision' }
 
-    assert_match %r{\A\[1\]\(https?://[^)]+/revisions/1\) My very first commit}, field['value']
+    assert_match %r{\A\[1\]\(https?://[^)]+/revisions/1\)\z}, field['value']
+    assert_not_includes mattermost_payloads.last.to_json, 'My very first commit'
     assert_nil issue.mattermost_changeset
+  end
+
+  def test_update_touching_only_ignored_attributes_is_not_posted
+    issue = Issue.find 1
+    with_mattermost_settings 'ignored_attributes' => %w[done_ratio] do
+      issue.init_journal User.find(2)
+      issue.done_ratio = 30
+      issue.save!
+    end
+
+    assert_empty mattermost_deliveries
+  end
+
+  def test_ignored_attributes_are_left_out_of_the_message
+    issue = Issue.find 1
+    with_mattermost_settings 'ignored_attributes' => ['', 'done_ratio'] do
+      issue.init_journal User.find(2)
+      issue.done_ratio = 30
+      issue.status_id = 2
+      issue.save!
+    end
+
+    assert_equal %w[Status], attachment_fields(mattermost_payloads.last).pluck('title')
+  end
+
+  def test_note_is_posted_when_only_ignored_attributes_change
+    issue = Issue.find 1
+    with_mattermost_settings 'ignored_attributes' => %w[done_ratio] do
+      issue.init_journal User.find(2), 'Halfway there'
+      issue.done_ratio = 50
+      issue.save!
+    end
+
+    assert_equal %w[Comment], attachment_fields(mattermost_payloads.last).pluck('title')
+  end
+
+  def test_ignored_description_is_not_sent_as_text
+    issue = Issue.find 1
+    with_mattermost_settings 'ignored_attributes' => %w[description] do
+      issue.init_journal User.find(2), 'New wording'
+      issue.description = 'Rewritten by Oscar'
+      issue.save!
+    end
+
+    assert_nil mattermost_payloads.last.dig('props', 'attachments', 0, 'text')
   end
 
   def test_private_issue_is_skipped_unless_enabled
@@ -184,6 +250,29 @@ class IssueNotificationTest < ActiveSupport::TestCase
     _target, _payload, actor = mattermost_deliveries.last
 
     assert_equal({ 'username' => 'jsmith', 'email' => 'jsmith@somenet.foo' }, actor)
+  end
+
+  def test_actor_message_leaves_out_the_author
+    issue = Issue.find 1
+    with_mattermost_settings 'post_as_actor' => '1' do
+      issue.init_journal User.find(2), 'As myself'
+      issue.save!
+    end
+
+    payload = mattermost_payloads.last
+
+    assert_includes payload['message'], 'updated by **John Smith**'
+    assert_match %r{ - Issue \[[^\]]+\]\(https?://[^)]+#change-\d+\) updated\z}, payload['actor_message']
+  end
+
+  def test_no_actor_message_without_posting_as_actor
+    issue = Issue.find 1
+    with_mattermost_settings do
+      issue.init_journal User.find(2), 'As the bot'
+      issue.save!
+    end
+
+    assert_not mattermost_payloads.last.key?('actor_message')
   end
 
   def test_no_actor_identity_by_default

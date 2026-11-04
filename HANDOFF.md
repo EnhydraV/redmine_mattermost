@@ -45,6 +45,13 @@ Prises pendant l'implémentation (révisables) :
 - Prod lue le 2026-11-03 (hotfuzz, `root@hotfuzz.cubedesigners.com`, conteneur `redmine-mariadb`, lecture seule) : 86 lignes dans `messenger_settings` (migrations AlphaNodes 1 à 4), aucun webhook propre à un projet, salons tous au format accepté, options toutes à 0 (hérité). Global `plugin_redmine_messenger` : webhook sur `mm.cubedesigners.com`, salon par défaut `redmine-test`, mentions auto, observateurs, descriptions.
 - Piège trouvé en prod : un `plugin_redmine_mattermost` du 2016-10-14, laissé par l'ancien plugin altsol (webhook `slack.cubedesigners.com`, sérialisé en `ActionController::Parameters`). La migration 002 sautait l'import global en le voyant. Corrigée : un réglage sans clé `mattermost_team` n'est pas de ce plugin et est remplacé (import, sinon défauts) ; les `ActionController::Parameters` sont lus par `to_unsafe_h` ; l'URL du serveur est déduite du webhook (`.../hooks/...`). 6 tests (`test/unit/import_messenger_settings_test.rb`, schéma AlphaNodes).
 - Après déploiement : l'équipe reste à saisir ; le bot doit pouvoir publier dans les ~60 salons (droit "publier dans tous les canaux publics", et membre des canaux privés).
+- Mise en service le 2026-11-04 (Redmine sur hotfuzz, Mattermost 12.0.1 Team Edition sur gremlins, conteneur `mattermost`, équipe unique `cubedesigners`) :
+  - le compte Mattermost `redmine` (propriétaire du webhook de l'ancien plugin, 51 819 posts) converti en bot (`mmctl --local user convert redmine --bot`), rôles `system_user system_post_all_public` posés par `PUT /api/v4/users/{id}/roles` sur la socket locale (`/proc/<pid>/root/var/tmp/mattermost_local.socket`), `mmctl permissions role assign` étant réservé à l'édition Enterprise ; ajouté aux canaux privés `board` et `compta` (accord de Vincent) ;
+  - jeton du bot généré par `mmctl --local token generate`, posé dans le bloc `docker-images/redmine` de `/docker/redmine/.env` (fichier généré par `bw-env.sh`, sauvegarde `.env.avant-mattermost`), conteneur recréé ;
+  - Redmine : équipe `cubedesigners`, "Publier au nom de l'utilisateur" activé ; plugin Mattermost déjà réglé par Vincent (`redmineurl`, `relayusernames=redmine`, `defaulttrackerid=2`) ;
+  - vérifié par le client du plugin : relais 0.1.0+3547d66 joignable, 64 canaux sur 69 trouvés ; introuvables : `ipglobal`, `kadreo`, `odile` (archivés), `mondelez`, `vsu-veryspeciaunit` (inexistants).
+  - Les 5 canaux introuvables passés à `-` (projets ip-global, kadreo, odile-front, mondelez, stop-the-robots), à la demande de Vincent : 64 canaux sur 64 trouvés.
+  - Reste à Vincent : renvoyer le jeton dans la note Bitwarden (bw-sync sur hotfuzz), sinon la prochaine régénération du `.env` l'efface ; tester un vrai ticket.
 - Aucun serveur Mattermost ni plugin Mattermost dans `docker-images` : le plugin `com.cubedesigners.redmine` s'installe à la main sur le serveur Mattermost (archive des releases GitHub de `EnhydraV/mattermost-plugin-redmine`, ou `make dist`).
 - Le jeton du bot n'est pas encore câblé : à ajouter dans `redmine/docker-compose.yml` (`REDMINE_MATTERMOST_BOT_TOKEN`), `redmine/.env.example` et la note Bitwarden `docker-images/redmine`.
 
@@ -103,6 +110,24 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Nettoyer les reliquats : `package.json`, `.stylelintrc.json`, `assets/*/.eslintignore`, `.stylelintignore`.
 - Bouton "Tester la connexion" dans la configuration globale (`/users/me`, et `relay_status` si le relais est activé).
 - Lancer slim-lint et les cops Minitest.
+
+## Silence (2.1.0, 2026-11-04)
+
+- Réglage global `ignored_attributes` (liste à choix multiples dans les options des tickets) : clés `done_ratio`, `cf_<id>`, `attachment`, `relation`... (`RedmineMattermost::IgnoredAttributes`). Mise à jour sans note ni révision dont tous les détails sont ignorés : rien n'est publié ; sinon les détails ignorés sont retirés du message (la description ignorée n'est plus envoyée en texte). Cas visé par Vincent : le champ personnalisé "Sessions Claude Code" rempli par le MCP Redmine.
+- Mot-clé de commit : le champ "Révision" ne porte plus que le lien, sans le message du commit (demande de Vincent).
+- Publication au nom de l'utilisateur : le message sans "par <utilisateur>" (clés `label_mattermost_*_short`) part dans `payload['actor_message']` ; le job l'envoie au relais comme message du post et transmet le message complet dans `bot_message`, que le relais doit utiliser quand il publie au nom du bot. Sur l'appel REST direct du bot, `actor_message` est retiré.
+- Mentions : chez Cubedesigners les logins Redmine sont des emails (7 utilisateurs actifs sur 7). `add_mention_users` met les utilisateurs mentionnés (login, email) dans `payload['mention_users']` ; le job les résout par `Client#username_for` (nom d'utilisateur si le login n'est pas un email, puis `GET /users/email/...`, cache 1 h, possible car `PrivacySettings.ShowEmailAddress` est à true sur gremlins) et remplace les `@login` dans tout le payload (`Formatter.replace_mentions`). Les messages directs portent aussi l'email du destinataire et sont résolus de la même façon.
+- Mentions et observateurs : Redmine n'ajoute pas les mentionnés aux observateurs (mail seulement, `notified_mentions`) ; les observateurs automatiques ne viennent que des préférences "Surveiller automatiquement" (contributeur, assigné).
+- Réponses depuis Mattermost (validé par Vincent le 2026-11-04 : appel serveur à serveur accepté, écho géré en supprimant la réponse du fil). Côté Redmine, fait et testé :
+  - les notifications de ticket portent `props.redmine_issue_id` ;
+  - `POST /mattermost/replies` (`MattermostRepliesController` < `ActionController::API`, hors session) : en-tête `X-Redmine-Mattermost-Secret` comparé à `REDMINE_MATTERMOST_REPLY_SECRET` (absent ou faux : 404) ; corps JSON `issue_id, username, email, message, root_id, channel_id` ; utilisateur par login puis email (`User.having_mail`), actif, ticket visible et permission `add_issue_notes` ; réponses 201 `{journal_id}`, 404 ticket, 422 utilisateur inconnu ou message vide ou ticket invalide, 403 permission ;
+  - la note porte `issue.mattermost_reply_to` ; la notification part avec `payload['reply_to'] = {root_id, channel_id}` : le job pose `root_id` sur l'appel REST quand le canal résolu est celui du fil, et transmet `reply_to` au relais.
+- Contrat attendu de `mattermost-plugin-redmine` (à écrire, dépôt non monté le 2026-11-04) :
+  - réglage `RedmineReplySecret` (`secret: true`), avec `RedmineURL` existant ;
+  - hook `MessageHasBeenPosted` : ignorer si `RootId` vide, si le post porte `redmine_issue_id` (nos notifications, donc pas de boucle), s'il est d'un bot ou de type système ; lire la racine (`GetPost(RootId)`), prendre son `redmine_issue_id` ; POST JSON vers `{RedmineURL}/mattermost/replies` avec l'en-tête secret ; 201 -> `DeletePost(reply)` ; sinon `SendEphemeralPost` à l'auteur avec le `message` de la réponse ;
+  - relais : `relayRequest.BotMessage` (`bot_message`) utilisé quand le poster est le bot ; `relayRequest.ReplyTo` (`reply_to` : `root_id`, `channel_id`) -> `post.RootId` si `channel.Id` == `channel_id`.
+  - déploiement : même secret dans le `.env` Redmine de hotfuzz (`REDMINE_MATTERMOST_REPLY_SECRET`, à ajouter au compose de `docker-images` et à la note Bitwarden) et dans la config du plugin sur gremlins.
+- RESTE À FAIRE côté `mattermost-plugin-redmine` (dépôt non monté le 2026-11-04) : champ `BotMessage string json:"bot_message,omitempty"` dans `relayRequest`, et `post.Message = req.BotMessage` quand `poster.Id == requester.Id`, avec un test. À déployer AVANT la 2.1.0 de Redmine : sinon un repli sur le bot publie la version sans auteur.
 
 ## Pistes (étape 2)
 

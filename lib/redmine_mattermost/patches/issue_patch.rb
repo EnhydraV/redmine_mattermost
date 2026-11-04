@@ -8,6 +8,8 @@ module RedmineMattermost
       included do
         # Révision qui a déclenché la mise à jour (mot-clé de commit), posée par ModelHook
         attr_accessor :mattermost_changeset
+        # Fil Mattermost d'où vient la note ({ 'root_id', 'channel_id' }), posé par Replies
+        attr_accessor :mattermost_reply_to
 
         after_create_commit :send_mattermost_create
         after_update_commit :send_mattermost_update
@@ -21,6 +23,7 @@ module RedmineMattermost
         RedmineMattermost.safely("issue ##{id} updated") { RedmineMattermost::IssueNotification.updated self }
       ensure
         self.mattermost_changeset = nil
+        self.mattermost_reply_to = nil
       end
     end
   end

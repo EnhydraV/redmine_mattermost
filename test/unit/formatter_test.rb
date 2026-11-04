@@ -12,6 +12,22 @@ class FormatterTest < ActiveSupport::TestCase
                  RedmineMattermost::Formatter.link('https://x.test/a/file(1).pdf', 'file_(1).pdf')
   end
 
+  def test_replace_mentions_rewrites_every_string_of_the_payload
+    payload = { 'message' => 'To: @charlie@example.com, @juliette',
+                'props' => { 'attachments' => [{ 'fields' => [{ 'value' => 'Ask @Charlie@example.com.' }] }] } }
+
+    result = RedmineMattermost::Formatter.replace_mentions payload, 'charlie@example.com' => 'charlie'
+
+    assert_equal 'To: @charlie, @juliette', result['message']
+    assert_equal 'Ask @charlie.', result.dig('props', 'attachments', 0, 'fields', 0, 'value')
+  end
+
+  def test_replace_mentions_leaves_longer_logins_alone
+    text = 'Mail @charlie@example.com.au or oscar@charlie@example.com'
+
+    assert_equal text, RedmineMattermost::Formatter.replace_mentions(text, 'charlie@example.com' => 'charlie')
+  end
+
   def test_field_replaces_blank_value_with_dash
     assert_equal({ 'title' => 'Status', 'value' => '-', 'short' => true },
                  RedmineMattermost::Formatter.field('Status', ''))

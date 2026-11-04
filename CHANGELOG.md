@@ -1,6 +1,24 @@
 Changelog
 =========
 
+2.1.0
+------
+
+- New global setting "Ignored attributes" (issue attributes, custom fields, files, relations):
+  an update that only changes ignored attributes, without a note, is not posted; other updates
+  are posted without them
+- Commit keyword updates show the link to the revision without the commit message
+- Redmine mentions and direct message recipients are converted to Mattermost usernames, found by
+  username or by email (Redmine logins that are email addresses); the lookup runs in the delivery
+  job and is cached for one hour
+- Replies from Mattermost: a reply in the thread of an issue notification is sent by the
+  Mattermost plugin to `POST /mattermost/replies` (shared secret in REDMINE_MATTERMOST_REPLY_SECRET)
+  and added as a note by the matching Redmine user; the notification of that note is posted in the
+  same thread. Issue notifications carry a `redmine_issue_id` post property
+- When posting as the acting user, the message leaves out "updated by <user>"; the full message
+  is kept for the bot when the relay falls back to it (requires the relay of
+  mattermost-plugin-redmine reading `bot_message`)
+
 2.0.0
 ------
 

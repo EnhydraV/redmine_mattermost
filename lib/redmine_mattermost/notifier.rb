@@ -28,7 +28,7 @@ module RedmineMattermost
 
     def user_targets(users)
       users.filter_map do |user|
-        { 'username' => user.login } if user.respond_to?(:login) && user.login.present?
+        { 'username' => user.login, 'email' => user.mail.to_s } if user.respond_to?(:login) && user.login.present?
       end
     end
   end

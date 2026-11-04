@@ -4,17 +4,22 @@ ko:
   label_mattermost_connection: Mattermost 연결
   label_mattermost_destination: 대상
   label_mattermost_issue_created: "%{project_url} - %{user}님이 일감(%{url})을 만들었습니다."
+  label_mattermost_issue_created_short: "%{project_url} - 일감(%{url})이 생성되었습니다."
   label_mattermost_issue_updated: "%{project_url} - %{user}님이 일감(%{url})을 수정했습니다."
+  label_mattermost_issue_updated_short: "%{project_url} - 일감(%{url})이 수정되었습니다."
   label_mattermost_mentions: "받는 사람: %{names}"
   label_mattermost_project_text_field_info: 기본값을 사용하려면 빈 값으로 두세요.
   label_mattermost_settings_disabled: 비활성화
   label_mattermost_settings_enabled: 활성화
   label_mattermost_wiki_created: "%{project_url} - %{user}님이 위키(%{url})를 만들었습니다."
+  label_mattermost_wiki_created_short: "%{project_url} - 위키(%{url})가 생성되었습니다."
   label_mattermost_wiki_updated: "%{project_url} - %{user}님이 위키(%{url})를 수정했습니다."
+  label_mattermost_wiki_updated_short: "%{project_url} - 위키(%{url})가 수정되었습니다."
   label_settings_auto_mentions: Redmine 멘션을 Mattermost 멘션으로 변환
   label_settings_default_mentions: 멘션될 기본 사용자
   label_settings_direct_messages: 다이렉트 메시지 보내기
   label_settings_display_watchers: 지켜보는 사용자들을 보여줌
+  label_settings_ignored_attributes: 무시할 속성
   label_settings_mattermost_bot_token: 봇 액세스 토큰
   label_settings_mattermost_channel: 채널
   label_settings_mattermost_team: 팀
@@ -34,6 +39,7 @@ ko:
   mattermost_channel_info: "URL에 표시되는 채널 이름을 쉼표로 구분하여 입력합니다. @사용자이름은 다이렉트 메시지를 보내고, -는 전송을 비활성화합니다."
   mattermost_default_mentions_info: "알림을 받을 기본 사용자를 나타내며, 쉼표로 구분 (예: @all, @here)"
   mattermost_direct_messages_info: Redmine이 알림을 보내는 각 사용자에게 다이렉트 메시지도 보냅니다. Mattermost 사용자 이름은 Redmine 로그인과 같아야 합니다.
+  mattermost_ignored_attributes_info: "이 속성만 변경하고 메모가 없는 업데이트는 게시되지 않습니다. 다른 업데이트는 이 속성을 제외하고 게시됩니다."
   mattermost_issue_intro: Mattermost로 보낼 일감 이벤트를 선택합니다.
   mattermost_post_as_actor_info: "Redmine에서 작업한 Mattermost 사용자로 서버 플러그인 %{plugin_id} (mattermost-plugin-redmine)를 통해 메시지를 게시합니다. 사용자를 찾을 수 없거나 채널에 쓸 수 없거나 플러그인이 응답하지 않으면 봇이 게시합니다."
   mattermost_settings_intro: "메시지는 Mattermost 봇 계정으로 게시됩니다. 서버 URL이나 토큰을 빈 값으로 두면 알림이 전송되지 않습니다. 여기에서 설정한 팀과 채널은 모든 프로젝트에 적용되며, 각 프로젝트 설정에서 변경할 수 있습니다."

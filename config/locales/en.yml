@@ -4,17 +4,22 @@ en:
   label_mattermost_connection: Mattermost connection
   label_mattermost_destination: Destination
   label_mattermost_issue_created: "%{project_url} - Issue %{url} created by %{user}"
+  label_mattermost_issue_created_short: "%{project_url} - Issue %{url} created"
   label_mattermost_issue_updated: "%{project_url} - Issue %{url} updated by %{user}"
+  label_mattermost_issue_updated_short: "%{project_url} - Issue %{url} updated"
   label_mattermost_mentions: "To: %{names}"
   label_mattermost_project_text_field_info: Leave it blank to inherit the default value.
   label_mattermost_settings_disabled: Disabled
   label_mattermost_settings_enabled: Enabled
   label_mattermost_wiki_created: "%{project_url} - Wiki %{url} created by %{user}"
+  label_mattermost_wiki_created_short: "%{project_url} - Wiki %{url} created"
   label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} updated by %{user}"
+  label_mattermost_wiki_updated_short: "%{project_url} - Wiki %{url} updated"
   label_settings_auto_mentions: Convert Redmine mentions to Mattermost mentions?
   label_settings_default_mentions: Default people for mentions
   label_settings_direct_messages: Send direct messages
   label_settings_display_watchers: Display watchers?
+  label_settings_ignored_attributes: Ignored attributes
   label_settings_mattermost_bot_token: Bot access token
   label_settings_mattermost_channel: Channels
   label_settings_mattermost_team: Team
@@ -34,6 +39,7 @@ en:
   mattermost_channel_info: "Channel names as they appear in their URL, comma separated. @username sends a direct message, - disables posting."
   mattermost_default_mentions_info: "Default people to notify, comma separated (e.g. @all, @here)"
   mattermost_direct_messages_info: Also sends a direct message to every user notified by Redmine. The Mattermost username must match the Redmine login.
+  mattermost_ignored_attributes_info: "An update that only changes these attributes, without a note, is not posted. Other updates are posted without them."
   mattermost_issue_intro: Choose which issue events are posted to Mattermost.
   mattermost_post_as_actor_info: "Publishes each message as the Mattermost user who acted in Redmine, through the server plugin %{plugin_id} (mattermost-plugin-redmine). The bot posts when the user is unknown or cannot post in the channel, or when the plugin does not answer."
   mattermost_settings_intro: "Messages are posted by a Mattermost bot account. Leave the server URL or the token empty to disable every notification. The team and channels set here apply to all projects, and each project can override them in its settings."

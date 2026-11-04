@@ -24,6 +24,20 @@ class WikiNotificationTest < ActiveSupport::TestCase
     assert_equal 'Typo *fixed*', payload.dig('props', 'attachments', 0, 'text')
   end
 
+  def test_page_update_has_an_actor_message_when_posting_as_actor
+    content = WikiContent.find 1
+    with_mattermost_settings 'post_wiki_updates' => '1', 'post_as_actor' => '1' do
+      content.text = 'Updated by Juliette'
+      content.author = User.find 2
+      content.save!
+    end
+
+    payload = mattermost_payloads.last
+
+    assert_includes payload['message'], 'updated by **John Smith**'
+    assert_match(/\) updated\z/, payload['actor_message'])
+  end
+
   def test_page_update_is_not_posted_when_disabled
     content = WikiContent.find 1
     with_mattermost_settings 'post_wiki_updates' => '0' do

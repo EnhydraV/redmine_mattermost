@@ -23,11 +23,12 @@ module RedmineMattermost
       return unless RedmineMattermost.configured? && ProjectSettings.enabled?(@project, setting)
 
       payload = RedmineMattermost.with_default_language do
-        message = l(label,
-                    project_url: Formatter.object_link(@project, @project.name),
-                    url: Formatter.object_link(@page, @page.pretty_title),
-                    user: Formatter.bold(@content.author))
-        Formatter.post message, comments_attachment
+        args = { project_url: Formatter.object_link(@project, @project.name),
+                 url: Formatter.object_link(@page, @page.pretty_title) }
+        message = l(label, **args, user: Formatter.bold(@content.author))
+        # Version sans auteur, pour le post publié au nom de l'utilisateur par le relais
+        actor_message = l :"#{label}_short", **args if RedmineMattermost.actor_for @content.author
+        Formatter.post message, comments_attachment, actor_message: actor_message
       end
       Notifier.deliver @project, payload, actor: @content.author
     end

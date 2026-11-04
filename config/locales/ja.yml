@@ -4,17 +4,22 @@ ja:
   label_mattermost_connection: Mattermostへの接続
   label_mattermost_destination: 送信先
   label_mattermost_issue_created: "%{project_url} - チケット %{url} が %{user} によって作成されました。"
+  label_mattermost_issue_created_short: "%{project_url} - チケット %{url} が作成されました。"
   label_mattermost_issue_updated: "%{project_url} - チケット %{url} が %{user} によって更新されました。"
+  label_mattermost_issue_updated_short: "%{project_url} - チケット %{url} が更新されました。"
   label_mattermost_mentions: "宛先: %{names}"
   label_mattermost_project_text_field_info: デフォルトの設定を使う場合空欄にしてください。
   label_mattermost_settings_disabled: 無効
   label_mattermost_settings_enabled: 有効
   label_mattermost_wiki_created: "%{project_url} - Wiki %{url} が %{user} によって作成されました。"
+  label_mattermost_wiki_created_short: "%{project_url} - Wiki %{url} が作成されました。"
   label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} が %{user} によって更新されました。"
+  label_mattermost_wiki_updated_short: "%{project_url} - Wiki %{url} が更新されました。"
   label_settings_auto_mentions: RedmineのメンションをMattermostのメンションに変換する
   label_settings_default_mentions: デフォルトのメンション先
   label_settings_direct_messages: ダイレクトメッセージを送信する
   label_settings_display_watchers: ウォッチャーを表示する
+  label_settings_ignored_attributes: 無視する属性
   label_settings_mattermost_bot_token: Botのアクセストークン
   label_settings_mattermost_channel: チャンネル
   label_settings_mattermost_team: チーム
@@ -34,6 +39,7 @@ ja:
   mattermost_channel_info: "URLに表示されるチャンネル名を,(カンマ)区切りで指定して下さい。@ユーザー名 はダイレクトメッセージを送信し、- は送信を無効にします。"
   mattermost_default_mentions_info: "デフォルトで通知する相手を,(カンマ)区切りで指定して下さい(例: @all, @here)"
   mattermost_direct_messages_info: Redmineが通知する各ユーザーにもダイレクトメッセージを送信します。Mattermostのユーザー名はRedmineのログインIDと同じである必要があります。
+  mattermost_ignored_attributes_info: "これらの属性のみを変更し、注記のない更新は投稿されません。その他の更新はこれらの属性を除いて投稿されます。"
   mattermost_issue_intro: Mattermostに送信するチケットのイベントを選択して下さい。
   mattermost_post_as_actor_info: "Redmineで操作したMattermostユーザーとして、サーバープラグイン %{plugin_id} (mattermost-plugin-redmine) 経由でメッセージを投稿します。ユーザーが見つからない場合、チャンネルに投稿できない場合、またはプラグインが応答しない場合はBotが投稿します。"
   mattermost_settings_intro: "メッセージはMattermostのBotアカウントから投稿されます。サーバーのURLまたはトークンが空欄の場合、通知は送信されません。ここで指定したチームとチャンネルは全てのプロジェクトに適用され、プロジェクトの設定画面で上書きできます。"

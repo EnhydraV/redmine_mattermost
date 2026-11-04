@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 module RedmineMattermost
-  VERSION = '2.0.0'
+  VERSION = '2.1.0'
 
   # Variable d'environnement prioritaire sur le jeton saisi dans l'administration
   BOT_TOKEN_ENV = 'REDMINE_MATTERMOST_BOT_TOKEN'
+
+  # Secret partagé avec le plugin Mattermost, qui transmet les réponses aux notifications
+  REPLY_SECRET_ENV = 'REDMINE_MATTERMOST_REPLY_SECRET'
 
   # Plugin serveur Mattermost (dépôt EnhydraV/mattermost-plugin-redmine) qui publie au nom de l'utilisateur
   RELAY_PLUGIN_ID = 'com.cubedesigners.redmine'
@@ -26,6 +29,11 @@ module RedmineMattermost
 
     def bot_token_from_env?
       ENV.fetch(BOT_TOKEN_ENV, nil).present?
+    end
+
+    # Sans secret, les réponses venues de Mattermost sont refusées
+    def reply_secret
+      ENV.fetch(REPLY_SECRET_ENV, nil).presence
     end
 
     # Identité transmise au plugin relais, ou nil pour publier en tant que bot

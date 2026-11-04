@@ -63,6 +63,44 @@ class ClientTest < ActiveSupport::TestCase
     assert_equal({ 'post_id' => 'p1', 'as_actor' => true }, response)
   end
 
+  def test_relay_post_sends_the_bot_message
+    http = mock 'http'
+    http.expects(:request).with do |request|
+      JSON.parse(request.body).slice('post', 'bot_message') == { 'post' => { 'message' => 'Hello' },
+                                                                 'bot_message' => 'Hello by Charlie' }
+    end.returns(json_response(Net::HTTPCreated, '201', post_id: 'p1', as_actor: false))
+    stub_http http
+
+    @client.relay_post({ 'username' => 'juliette' }, { 'username' => 'charlie' }, { 'message' => 'Hello' },
+                       bot_message: 'Hello by Charlie')
+  end
+
+  def test_username_for_looks_up_the_username_first
+    http = mock 'http'
+    http.expects(:request).with { |request| request.path == '/api/v4/users/username/charlie' }
+                          .returns(json_response(Net::HTTPOK, '200', username: 'charlie'))
+    stub_http http
+
+    assert_equal 'charlie', @client.username_for('charlie', 'charlie@example.com')
+  end
+
+  def test_username_for_uses_the_email_when_the_login_is_an_email
+    http = mock 'http'
+    http.expects(:request).with { |request| request.path == '/api/v4/users/email/oscar%40example.com' }
+                          .returns(json_response(Net::HTTPOK, '200', username: 'oscar'))
+    stub_http http
+
+    assert_equal 'oscar', @client.username_for('oscar@example.com', 'oscar@example.com')
+  end
+
+  def test_username_for_is_nil_for_an_unknown_user
+    http = stub 'http'
+    http.stubs(:request).returns(json_response(Net::HTTPNotFound, '404', message: 'Unable to find the user.'))
+    stub_http http
+
+    assert_nil @client.username_for('victor', 'victor@example.com')
+  end
+
   def test_client_error_raises_without_leaking_the_token
     http = stub 'http'
     http.stubs(:request).returns(json_response(Net::HTTPNotFound, '404', message: 'Unable to find the channel.'))

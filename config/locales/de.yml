@@ -4,17 +4,22 @@ de:
   label_mattermost_connection: Mattermost-Verbindung
   label_mattermost_destination: Ziel
   label_mattermost_issue_created: "%{project_url} - Ticket %{url} erstellt von %{user}"
+  label_mattermost_issue_created_short: "%{project_url} - Ticket %{url} erstellt"
   label_mattermost_issue_updated: "%{project_url} - Ticket %{url} aktualisiert von %{user}"
+  label_mattermost_issue_updated_short: "%{project_url} - Ticket %{url} aktualisiert"
   label_mattermost_mentions: "An: %{names}"
   label_mattermost_project_text_field_info: Leer lassen, um den Standardwert zu übernehmen.
   label_mattermost_settings_disabled: Deaktiviert
   label_mattermost_settings_enabled: Aktiviert
   label_mattermost_wiki_created: "%{project_url} - Wiki %{url} erstellt von %{user}"
+  label_mattermost_wiki_created_short: "%{project_url} - Wiki %{url} erstellt"
   label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} aktualisiert von %{user}"
+  label_mattermost_wiki_updated_short: "%{project_url} - Wiki %{url} aktualisiert"
   label_settings_auto_mentions: Redmine-Erwähnungen in Mattermost-Erwähnungen umwandeln?
   label_settings_default_mentions: Standardbenutzer für Mentions
   label_settings_direct_messages: Direktnachrichten senden
   label_settings_display_watchers: Beobachter?
+  label_settings_ignored_attributes: Ignorierte Attribute
   label_settings_mattermost_bot_token: Zugriffstoken des Bots
   label_settings_mattermost_channel: Kanäle
   label_settings_mattermost_team: Team
@@ -34,6 +39,7 @@ de:
   mattermost_channel_info: "Kanalnamen wie in ihrer URL, durch Komma getrennt. @benutzername sendet eine Direktnachricht, - deaktiviert den Versand."
   mattermost_default_mentions_info: "Benutzer, die immer mit Mentions benachrichtigt werden sollen, durch Komma getrennt (z.B. @all, @here)."
   mattermost_direct_messages_info: Sendet zusätzlich jedem von Redmine benachrichtigten Benutzer eine Direktnachricht. Der Mattermost-Benutzername muss dem Redmine-Login entsprechen.
+  mattermost_ignored_attributes_info: "Eine Aktualisierung, die nur diese Attribute ändert und keine Notiz enthält, wird nicht veröffentlicht. Andere Aktualisierungen werden ohne sie veröffentlicht."
   mattermost_issue_intro: Legen Sie fest, welche Ticket-Ereignisse an Mattermost gesendet werden.
   mattermost_post_as_actor_info: "Veröffentlicht jede Nachricht als der Mattermost-Benutzer, der in Redmine gehandelt hat, über das Server-Plugin %{plugin_id} (mattermost-plugin-redmine). Ist der Benutzer unbekannt, darf er im Kanal nicht schreiben oder antwortet das Plugin nicht, postet der Bot."
   mattermost_settings_intro: "Die Nachrichten werden von einem Mattermost-Bot-Konto gesendet. Bleiben Server-URL oder Token leer, werden keine Nachrichten verschickt. Team und Kanäle gelten hier für alle Projekte und können in jedem Projekt überschrieben werden."

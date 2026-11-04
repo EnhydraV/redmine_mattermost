@@ -39,6 +39,14 @@ fieldset.box.tabular
   = render 'mattermost_settings/mattermost_checkbox', mf: 'display_watchers', settings: @settings
   = render 'mattermost_settings/mattermost_checkbox', mf: 'post_updates', settings: @settings
   = render 'mattermost_settings/mattermost_checkbox', mf: 'post_updates_reopened', settings: @settings
+  p
+    label = l :label_settings_ignored_attributes
+    = hidden_field_tag 'settings[ignored_attributes][]', '', id: nil
+    = select_tag 'settings[ignored_attributes][]',
+                 grouped_options_for_select(RedmineMattermost::IgnoredAttributes.choices,
+                                            RedmineMattermost::IgnoredAttributes.keys),
+                 multiple: true, size: 10
+    em.info = t :mattermost_ignored_attributes_info
   = render 'mattermost_settings/mattermost_checkbox', mf: 'new_include_description', settings: @settings
   = render 'mattermost_settings/mattermost_checkbox', mf: 'updated_include_description', settings: @settings
   = render 'mattermost_settings/mattermost_checkbox', mf: 'post_private_issues', settings: @settings

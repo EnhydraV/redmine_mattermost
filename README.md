@@ -8,8 +8,9 @@ This plugin is a fork of [redmine_messenger_so](https://github.com/smartorigin/r
 
 * Issue notifications: creation, updates, private issues and private notes (optional), reopened issues only (optional)
 * Changes, comments, attachments and the commit revision (when an issue is updated by a commit keyword) as message attachment fields
+* Ignored attributes: updates that only change them (without a note) are not posted, and they are left out of other updates
 * Wiki notifications: page creation and page updates
-* Mattermost mentions: default people to notify, and Redmine mentions (`@login`) converted to Mattermost mentions
+* Mattermost mentions: default people to notify, and Redmine mentions (`@login`) converted to Mattermost mentions. The Mattermost user is found by username, or by email when Redmine logins are email addresses (Mattermost must show email addresses, *Site Configuration > Users and Teams > Show Email Address*); this also applies to direct messages
 * Direct messages to the users notified by Redmine
 * Settings at system level, overridable per project, with inheritance from parent projects
 * Several channels per project, and direct messages to fixed users (`@username`)
@@ -44,12 +45,13 @@ The directory must be named `redmine_mattermost`. Restart Redmine, then configur
 * **Mattermost server URL**: base URL of the server, e.g. `https://chat.example.com`
 * **Bot access token**: the token created above. The `REDMINE_MATTERMOST_BOT_TOKEN` environment variable takes precedence over this field, which keeps the token out of the database.
 * **Team** and **Channels**: default destination for all projects. `@username` in the channel list sends a direct message, `-` disables posting.
+* **Ignored attributes** (in the issue options): attributes, custom fields, files or relations whose changes are not worth a message, such as a custom field filled by a tool.
 
 Each project can override these settings in *Settings > Mattermost* (permission *Manage Mattermost notifications*). Empty values are inherited from the parent project, then from the global settings.
 
 ## Posting as the acting user (optional)
 
-With the Mattermost plugin [mattermost-plugin-redmine](https://github.com/EnhydraV/mattermost-plugin-redmine) (id `com.cubedesigners.redmine`), messages are published as the Mattermost user who acted in Redmine. Mattermost never notifies people of their own posts, so nobody is notified of what they just did in Redmine. The same plugin adds a "Create a Redmine issue" action to Mattermost messages.
+With the Mattermost plugin [mattermost-plugin-redmine](https://github.com/EnhydraV/mattermost-plugin-redmine) (id `com.cubedesigners.redmine`), messages are published as the Mattermost user who acted in Redmine. Mattermost never notifies people of their own posts, so nobody is notified of what they just did in Redmine. Since the author is the post's own author, the message leaves out "updated by <user>"; when the bot posts instead, the full message is used. The same plugin adds a "Create a Redmine issue" action to Mattermost messages.
 
 1. Install the plugin on the Mattermost server: download its bundle from the GitHub releases (or build it with `make dist`), upload it in the System Console, *Plugins > Plugin Management* (plugin uploads must be enabled), and enable it.
 2. In the plugin settings, set **Relais : compte bot de Redmine** to the username of the bot used by Redmine. The relay is disabled while this setting is empty, and requests authenticated with any other account are refused.
@@ -60,6 +62,16 @@ The Mattermost user is the one whose username is the Redmine login, or, failing 
 The server plugin lets the Redmine bot token publish as any user allowed to post in the target channel: keep the token out of the database with the `REDMINE_MATTERMOST_BOT_TOKEN` environment variable. A channel can still appear as unread to the user who acted, since posts created by a plugin do not mark the channel as viewed for their author.
 
 Messages are sent by a background job (ActiveJob). Network errors and server errors (HTTP 429 and 5xx) are retried twice, 30 seconds apart; other errors are logged with the `[redmine_mattermost]` prefix.
+
+## Replying from Mattermost (optional)
+
+With the same Mattermost plugin, a reply written in the thread of an issue notification becomes a note of that issue, written by the Redmine user who has the same username, or else the same email address, and who is allowed to add notes. The reply is then removed from the thread, where the notification of the new note takes its place. When Redmine refuses the reply (unknown user, missing permission), the reply stays and its author gets an ephemeral message.
+
+1. Choose a long random secret, e.g. `openssl rand -hex 32`.
+2. Give it to Redmine in the `REDMINE_MATTERMOST_REPLY_SECRET` environment variable. Without it, the route `POST /mattermost/replies` answers 404.
+3. Set the same secret in the settings of the Mattermost plugin.
+
+A reply in a public channel becomes a public note. Later edits and deletions of a reply are not carried over to Redmine.
 
 ## Migrating from redmine_messenger or redmine_messenger_so
 

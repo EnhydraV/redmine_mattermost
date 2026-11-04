@@ -4,17 +4,22 @@ nl:
   label_mattermost_connection: Mattermost-verbinding
   label_mattermost_destination: Bestemming
   label_mattermost_issue_created: "%{project_url} - Issue %{url} aangemaakt door %{user}"
+  label_mattermost_issue_created_short: "%{project_url} - Issue %{url} aangemaakt"
   label_mattermost_issue_updated: "%{project_url} - Issue %{url} bijgewerkt door %{user}"
+  label_mattermost_issue_updated_short: "%{project_url} - Issue %{url} bijgewerkt"
   label_mattermost_mentions: "Aan: %{names}"
   label_mattermost_project_text_field_info: Laat leeg om de standaardwaarde over te nemen.
   label_mattermost_settings_disabled: Uitgeschakeld
   label_mattermost_settings_enabled: Ingeschakeld
   label_mattermost_wiki_created: "%{project_url} - Wiki %{url} aangemaakt door %{user}"
+  label_mattermost_wiki_created_short: "%{project_url} - Wiki %{url} aangemaakt"
   label_mattermost_wiki_updated: "%{project_url} - Wiki %{url} bijgewerkt door %{user}"
+  label_mattermost_wiki_updated_short: "%{project_url} - Wiki %{url} bijgewerkt"
   label_settings_auto_mentions: Redmine-mentions omzetten in Mattermost-mentions?
   label_settings_default_mentions: Standaardgebruikers voor mentions
   label_settings_direct_messages: Stuur directe berichten
   label_settings_display_watchers: Geef watchers weer?
+  label_settings_ignored_attributes: Genegeerde attributen
   label_settings_mattermost_bot_token: Toegangstoken van de bot
   label_settings_mattermost_channel: Kanalen
   label_settings_mattermost_team: Team
@@ -34,6 +39,7 @@ nl:
   mattermost_channel_info: "Kanaalnamen zoals in hun URL, gescheiden door een komma. @gebruikersnaam stuurt een direct bericht, - schakelt het versturen uit."
   mattermost_default_mentions_info: "Standaard gebruikers om op de hoogte te stellen, gescheiden door een komma (bijv. @all, @here)"
   mattermost_direct_messages_info: Stuurt ook een direct bericht naar elke gebruiker die Redmine op de hoogte stelt. De Mattermost-gebruikersnaam moet gelijk zijn aan de Redmine-login.
+  mattermost_ignored_attributes_info: "Een update die alleen deze attributen wijzigt, zonder notitie, wordt niet geplaatst. Andere updates worden zonder deze attributen geplaatst."
   mattermost_issue_intro: Kies welke issue-gebeurtenissen naar Mattermost worden gestuurd.
   mattermost_post_as_actor_info: "Plaatst elk bericht als de Mattermost-gebruiker die in Redmine handelde, via de serverplugin %{plugin_id} (mattermost-plugin-redmine). De bot plaatst het bericht als de gebruiker onbekend is, niet in het kanaal mag schrijven, of als de plugin niet antwoordt."
   mattermost_settings_intro: "De berichten worden geplaatst door een Mattermost-botaccount. Laat de server-URL of het token leeg om alle meldingen uit te schakelen. Het team en de kanalen die hier zijn ingesteld gelden voor alle projecten, en elk project kan ze in zijn instellingen overschrijven."

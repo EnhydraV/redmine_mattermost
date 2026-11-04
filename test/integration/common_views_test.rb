@@ -38,6 +38,7 @@ class CommonViewsTest < Redmine::IntegrationTest
     assert_select 'input[name=?][value=?]', 'settings[mattermost_url]', 'https://chat.example.com'
     assert_select 'input[type=password][name=?]', 'settings[mattermost_bot_token]'
     assert_select 'input[type=checkbox][name=?][checked=checked]', 'settings[post_updates]'
+    assert_select 'select[name=?][multiple=multiple] option[value=?]', 'settings[ignored_attributes][]', 'done_ratio'
   end
 
   def test_project_settings_tab

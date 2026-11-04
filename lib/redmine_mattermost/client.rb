@@ -68,13 +68,24 @@ module RedmineMattermost
       cached('me') { request(:get, '/users/me').fetch 'id' }
     end
 
+    # Nom d'utilisateur Mattermost d'un utilisateur Redmine : même nom (si le login n'est pas un
+    # email), sinon même adresse email. nil si introuvable, réponse gardée en cache une heure
+    def username_for(login, email = nil)
+      cached("username/#{login}/#{email}") { lookup_username(login, email) || '' }.presence
+    end
+
     def create_post(payload)
       request :post, '/posts', payload
     end
 
-    # Publication par le plugin relais, au nom de l'utilisateur quand il peut publier
-    def relay_post(target, actor, payload)
-      request :post, '/posts', { 'target' => target, 'actor' => actor, 'post' => payload }, base: RELAY_PATH
+    # Publication par le plugin relais, au nom de l'utilisateur quand il peut publier.
+    # bot_message remplace le message quand le relais se rabat sur le bot ; reply_to
+    # ({ 'root_id', 'channel_id' }) place le post dans ce fil s'il vise le même canal
+    def relay_post(target, actor, payload, bot_message: nil, reply_to: nil)
+      body = { 'target' => target, 'actor' => actor, 'post' => payload }
+      body['bot_message'] = bot_message if bot_message.present?
+      body['reply_to'] = reply_to if reply_to.present?
+      request :post, '/posts', body, base: RELAY_PATH
     end
 
     def relay_status
@@ -82,6 +93,21 @@ module RedmineMattermost
     end
 
     private
+
+    # La recherche par email suppose que Mattermost montre les adresses (PrivacySettings.ShowEmailAddress)
+    def lookup_username(login, email)
+      paths = []
+      paths << "/users/username/#{segment login}" if login.present? && login.exclude?('@')
+      paths << "/users/email/#{segment email}" if email.present?
+      paths.each do |path|
+        return request(:get, path).fetch('username')
+      rescue TransientError
+        raise
+      rescue Error
+        next
+      end
+      nil
+    end
 
     def request(method, path, body = nil, base: API_PATH)
       uri = URI.parse "#{@server_url}#{base}#{path}"
