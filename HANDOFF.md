@@ -129,6 +129,14 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
   - déploiement : même secret dans le `.env` Redmine de hotfuzz (`REDMINE_MATTERMOST_REPLY_SECRET`, à ajouter au compose de `docker-images` et à la note Bitwarden) et dans la config du plugin sur gremlins.
 - RESTE À FAIRE côté `mattermost-plugin-redmine` (dépôt non monté le 2026-11-04) : champ `BotMessage string json:"bot_message,omitempty"` dans `relayRequest`, et `post.Message = req.BotMessage` quand `poster.Id == requester.Id`, avec un test. À déployer AVANT la 2.1.0 de Redmine : sinon un repli sur le bot publie la version sans auteur.
 
+### Mise en service de la 2.1.0 (2026-11-04)
+
+- Piège : le workflow Forgejo "Build redmine image" de `docker-images` ne part que sur un commit qui touche `Dockerfile`, `.dockerignore`, `plugins.list`, `scripts/` ou le workflow ; un push GitHub de ce dépôt ne déclenche rien. Mettre à jour le plugin en prod = relancer le workflow à la main (workflow_dispatch), puis tirer l'image et recréer le conteneur.
+- Plugin Mattermost `0.1.0+a1c1fa5` installé sur gremlins (`mmctl --local plugin add --force`, archive déposée dans `/mattermost/data` : le `/tmp` du conteneur est un tmpfs invisible pour `docker cp`).
+- Secret des réponses (64 car. hex) posé dans la config du plugin (`mmctl --local config patch` avec la section complète du plugin) et dans le bloc `docker-images/redmine` de `/docker/redmine/.env`, conteneur recréé. Route vérifiée : mauvais secret 404 vide, bon secret et ticket 0 : 404 `issue not found`.
+- Attributs ignorés en prod : `cf_9` (Sessions Claude Code).
+- Reste à Vincent : bw-sync des deux secrets (jeton du bot, secret des réponses) vers la note Bitwarden, sinon une régénération du `.env` les efface ; supprimer `/docker/redmine/.env.avant-mattermost` ; tester une vraie réponse dans un fil.
+
 ## Pistes (étape 2)
 
 - Un fil de discussion par ticket (`root_id`), ce qui suppose de mémoriser l'identifiant du premier post par ticket et par canal (le relais renvoie déjà `post_id`).
