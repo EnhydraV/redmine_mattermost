@@ -6,8 +6,8 @@ module RedmineMattermost
   # attachment et relation pour les fichiers et les relations.
   module IgnoredAttributes
     CORE_ATTRIBUTES = %w[project_id tracker_id subject description status_id priority_id assigned_to_id
-                         category_id fixed_version_id parent_id start_date due_date estimated_hours
-                         done_ratio is_private].freeze
+                         category_id fixed_version_id parent_id child_id start_date due_date
+                         estimated_hours done_ratio is_private].freeze
 
     class << self
       include Redmine::I18n
@@ -33,17 +33,10 @@ module RedmineMattermost
 
       # Choix groupés pour la page de configuration
       def choices
-        attributes = CORE_ATTRIBUTES.map { |key| [attribute_label(key), key] }
+        attributes = CORE_ATTRIBUTES.map { |key| [JournalField.attribute_title(key), key] }
         attributes += [[l(:label_attachment_plural), 'attachment'], [l(:label_related_issues), 'relation']]
         custom_fields = IssueCustomField.sorted.map { |field| [field.name, "cf_#{field.id}"] }
         { l(:label_attribute_plural) => attributes, l(:label_custom_field_plural) => custom_fields }
-      end
-
-      private
-
-      def attribute_label(key)
-        name = key.delete_suffix '_id'
-        name == 'parent' ? l(:field_parent_issue) : l(:"field_#{name}")
       end
     end
   end

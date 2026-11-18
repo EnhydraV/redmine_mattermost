@@ -37,6 +37,14 @@ class JournalFieldTest < ActiveSupport::TestCase
     assert_match %r{\A\[Feature request #2: .+\]\(https?://[^)]+/issues/2\)\z}, RedmineMattermost::JournalField.for(detail)['value']
   end
 
+  def test_subtask_added_to_the_parent_is_a_link_to_the_child
+    detail = JournalDetail.new property: 'attr', prop_key: 'child_id', value: '2'
+    field = RedmineMattermost::JournalField.for detail
+
+    assert_equal l(:label_subtask), field['title']
+    assert_match %r{\A\[Feature request #2: .+\]\(https?://[^)]+/issues/2\)\z}, field['value']
+  end
+
   def test_deleted_custom_field_is_left_out
     detail = JournalDetail.new property: 'cf', prop_key: '999999', value: 'x'
 

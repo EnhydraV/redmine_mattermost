@@ -45,7 +45,7 @@ The directory must be named `redmine_mattermost`. Restart Redmine, then configur
 * **Mattermost server URL**: base URL of the server, e.g. `https://chat.example.com`
 * **Bot access token**: the token created above. The `REDMINE_MATTERMOST_BOT_TOKEN` environment variable takes precedence over this field, which keeps the token out of the database.
 * **Team** and **Channels**: default destination for all projects. `@username` in the channel list sends a direct message, `-` disables posting.
-* **Ignored attributes** (in the issue options): attributes, custom fields, files or relations whose changes are not worth a message, such as a custom field filled by a tool.
+* **Ignored attributes** (in the issue options): attributes, custom fields, files or relations whose changes are not worth a message, such as a custom field filled by a tool. *Subtask* covers the update Redmine records on the parent issue when a subtask is attached to it or detached from it.
 
 Each project can override these settings in *Settings > Mattermost* (permission *Manage Mattermost notifications*). Empty values are inherited from the parent project, then from the global settings.
 

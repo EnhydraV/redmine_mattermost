@@ -16,12 +16,28 @@ module RedmineMattermost
       'fixed_version_id' => 'Version'
     }.freeze
 
-    ISSUE_ATTRIBUTES = %w[parent_id copied_from_id].freeze
+    # child_id : détail posé par Redmine sur le parent quand une sous-tâche y est rattachée ou en est retirée
+    ISSUE_ATTRIBUTES = %w[parent_id child_id copied_from_id].freeze
     LONG_ATTRIBUTES = %w[subject].freeze
     BOOLEAN_ATTRIBUTES = %w[is_private].freeze
 
-    def self.for(detail)
-      new(detail).to_h
+    class << self
+      include Redmine::I18n
+
+      def for(detail)
+        new(detail).to_h
+      end
+
+      # Libellé d'un attribut du ticket, repris par la liste des attributs ignorés
+      def attribute_title(key)
+        name = key.delete_suffix '_id'
+        case name
+        when 'parent' then l(:field_parent_issue)
+        when 'child' then l(:label_subtask)
+        when 'copied_from' then l(:label_copied_from)
+        else l :"field_#{name}"
+        end
+      end
     end
 
     def initialize(detail)
@@ -43,16 +59,7 @@ module RedmineMattermost
       key = @detail.prop_key.to_s
       return if key == 'description'
 
-      Formatter.field attribute_title(key), attribute_value(key), short: LONG_ATTRIBUTES.exclude?(key)
-    end
-
-    def attribute_title(key)
-      name = key.delete_suffix '_id'
-      case name
-      when 'parent' then l(:field_parent_issue)
-      when 'copied_from' then l(:label_copied_from)
-      else l :"field_#{name}"
-      end
+      Formatter.field self.class.attribute_title(key), attribute_value(key), short: LONG_ATTRIBUTES.exclude?(key)
     end
 
     def attribute_value(key)

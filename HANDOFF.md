@@ -137,6 +137,13 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Attributs ignorés en prod : `cf_9` (Sessions Claude Code).
 - Reste à Vincent : bw-sync des deux secrets (jeton du bot, secret des réponses) vers la note Bitwarden, sinon une régénération du `.env` les efface ; supprimer `/docker/redmine/.env.avant-mattermost` ; tester une vraie réponse dans un fil.
 
+### Sous-tâches (2.1.1, 2026-11-18)
+
+- Signalé par Vincent : rattacher une sous-tâche (#8616) à un parent (#8503) publiait sur le parent une notification "Translation missing: fr.field_child" avec le seul numéro. Redmine pose sur le parent un détail `attr` / `child_id` (`Issue#create_parent_issue_journal`), absent de `CORE_ATTRIBUTES`.
+- Corrigé : `child_id` ajouté aux attributs ignorables (libellé `label_subtask`, "Sous-tâche") et rendu comme un lien vers la sous-tâche. Le libellé des attributs vit dans `JournalField.attribute_title`, repris par `IgnoredAttributes.choices`.
+- La notification du ticket enfant ("Tâche parente") reste pilotée par `parent_id`.
+- Piège : avant la 2.1.1, la page de configuration ne propose pas `child_id`, donc un enregistrement de cette page retire la clé si elle a été posée à la main en base.
+
 ## Pistes (étape 2)
 
 - Un fil de discussion par ticket (`root_id`), ce qui suppose de mémoriser l'identifiant du premier post par ticket et par canal (le relais renvoie déjà `post_id`).

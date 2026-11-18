@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.1.1
+------
+
+- Subtasks: the detail Redmine adds to the parent issue when a subtask is attached or detached can be
+  ignored ("Subtask" in the ignored attributes), and is shown with the Redmine label and a link to the
+  subtask instead of a missing translation
+
 2.1.0
 ------
 

@@ -221,6 +221,17 @@ class IssueNotificationTest < ActiveSupport::TestCase
     assert_equal %w[Comment], attachment_fields(mattermost_payloads.last).pluck('title')
   end
 
+  def test_new_subtask_is_not_posted_on_the_parent_when_ignored
+    child = Issue.find 2
+    with_mattermost_settings 'ignored_attributes' => %w[child_id] do
+      child.init_journal User.find(2)
+      child.parent_issue_id = 1
+      child.save!
+    end
+
+    assert_equal([2], mattermost_payloads.map { |payload| payload.dig('props', 'redmine_issue_id') })
+  end
+
   def test_ignored_description_is_not_sent_as_text
     issue = Issue.find 1
     with_mattermost_settings 'ignored_attributes' => %w[description] do

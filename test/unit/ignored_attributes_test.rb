@@ -4,6 +4,7 @@ require File.expand_path '../../test_helper', __FILE__
 
 class IgnoredAttributesTest < ActiveSupport::TestCase
   include RedmineMattermost::TestHelper
+  include Redmine::I18n
 
   fixtures :custom_fields
 
@@ -26,6 +27,12 @@ class IgnoredAttributesTest < ActiveSupport::TestCase
     custom_fields = RedmineMattermost::IgnoredAttributes.choices.values.last
 
     assert_includes custom_fields, [CustomField.find(2).name, 'cf_2']
+  end
+
+  def test_choices_offer_subtasks_with_their_label
+    attributes = RedmineMattermost::IgnoredAttributes.choices.values.first
+
+    assert_includes attributes, [l(:label_subtask), 'child_id']
   end
 
   private
