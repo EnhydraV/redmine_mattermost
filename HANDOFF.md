@@ -134,7 +134,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Piège : le workflow Forgejo "Build redmine image" de `docker-images` ne part que sur un commit qui touche `Dockerfile`, `.dockerignore`, `plugins.list`, `scripts/` ou le workflow ; un push GitHub de ce dépôt ne déclenche rien. Mettre à jour le plugin en prod = relancer le workflow à la main (workflow_dispatch), puis tirer l'image et recréer le conteneur.
 - Plugin Mattermost `0.1.0+a1c1fa5` installé sur gremlins (`mmctl --local plugin add --force`, archive déposée dans `/mattermost/data` : le `/tmp` du conteneur est un tmpfs invisible pour `docker cp`).
 - Secret des réponses (64 car. hex) posé dans la config du plugin (`mmctl --local config patch` avec la section complète du plugin) et dans le bloc `docker-images/redmine` de `/docker/redmine/.env`, conteneur recréé. Route vérifiée : mauvais secret 404 vide, bon secret et ticket 0 : 404 `issue not found`.
-- Attributs ignorés en prod : `cf_9` (Sessions Claude Code).
+- Attributs ignorés en prod : `cf_9` (Sessions Claude Code), puis `child_id` le 2026-11-18.
 - Reste à Vincent : bw-sync des deux secrets (jeton du bot, secret des réponses) vers la note Bitwarden, sinon une régénération du `.env` les efface ; supprimer `/docker/redmine/.env.avant-mattermost` ; tester une vraie réponse dans un fil.
 
 ### Sous-tâches (2.1.1, 2026-11-18)
@@ -142,6 +142,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Signalé par Vincent : rattacher une sous-tâche (#8616) à un parent (#8503) publiait sur le parent une notification "Translation missing: fr.field_child" avec le seul numéro. Redmine pose sur le parent un détail `attr` / `child_id` (`Issue#create_parent_issue_journal`), absent de `CORE_ATTRIBUTES`.
 - Corrigé : `child_id` ajouté aux attributs ignorables (libellé `label_subtask`, "Sous-tâche") et rendu comme un lien vers la sous-tâche. Le libellé des attributs vit dans `JournalField.attribute_title`, repris par `IgnoredAttributes.choices`.
 - La notification du ticket enfant ("Tâche parente") reste pilotée par `parent_id`.
+- Prod (2026-11-18, accord de Vincent) : `child_id` ajouté à la main en base, attributs ignorés = `["cf_9", "child_id"]`. SSH : `root@hotfuzz.cubedesigners.com` (le nom court `hotfuzz` résout vers l'adresse Tailscale, où la clé est refusée).
 - Piège : avant la 2.1.1, la page de configuration ne propose pas `child_id`, donc un enregistrement de cette page retire la clé si elle a été posée à la main en base.
 
 ## Pistes (étape 2)
