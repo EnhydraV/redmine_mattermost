@@ -145,6 +145,14 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Prod (2026-11-18, accord de Vincent) : `child_id` ajouté à la main en base, attributs ignorés = `["cf_9", "child_id"]`. SSH : `root@hotfuzz.cubedesigners.com` (le nom court `hotfuzz` résout vers l'adresse Tailscale, où la clé est refusée).
 - Piège : avant la 2.1.1, la page de configuration ne propose pas `child_id`, donc un enregistrement de cette page retire la clé si elle a été posée à la main en base.
 
+### Images collées (2.2.0, 2026-11-19)
+
+- Demande de Vincent : voir dans Mattermost les images collées dans une note (`<img style="width: 1090px;" src="clipboard-....png"><br>`, affiché brut). Choix de Vincent : fichiers joints au post par le relais (copie dans le stockage de gremlins), images citées dans le texte seulement (les pièces jointes restent des liens).
+- `RedmineMattermost::InlineImages` : motifs HTML, Markdown et Textile ; nom résolu comme Redmine 7 (`InlineAttachmentsScrubber` : extensions d'image, `CGI.unescape`, `Attachment.latest_attach`, insensible à la casse, la plus récente gagne) parmi les pièces jointes relues en base (`Attachment.where(container: issue)`). Une référence résolue vers une image est retirée du texte (avec le `<br>` qui suit) ; une note réduite à l'image n'a plus de champ Commentaire.
+- Payload : `images` = `[{id, name, link}]`, retiré par le job. Relais : `files` = `[{name, data (base64)}]` dans la requête (5 au plus, 10 Mo chacun, fichier lisible) ; le reste devient des liens ajoutés au message (et à `bot_message`). Bot seul (pas de relais, ou relais en échec) : liens. Pas de téléversement par l'API REST du bot : `upload_file` exige d'être membre du canal.
+- Vérifié dans les sources de Mattermost 12.0.1 : `PluginAPI.UploadFile` crée le fichier avec `CreatorId = "nouser"`, que `FileInfo.AttachToPost` accepte pour n'importe quel auteur ; pas besoin de `CopyFileInfos`.
+- RESTE À FAIRE côté `mattermost-plugin-redmine` (dépôt non monté le 2026-11-19) : `relayRequest.Files []relayFile` (`name`, `data` : `[]byte`, décodé du base64 par `encoding/json`), après `resolveDestination` : `UploadFile(data, channel.Id, name)` pour chacun, `post.FileIds`, limites 5 fichiers et 10 Mo, limite de taille du corps de la requête à vérifier (environ 70 Mo en base64). À déployer AVANT la 2.2.0 de Redmine : un relais qui ignore `files` publie la note sans l'image, retirée du texte.
+
 ## Pistes (étape 2)
 
 - Un fil de discussion par ticket (`root_id`), ce qui suppose de mémoriser l'identifiant du premier post par ticket et par canal (le relais renvoie déjà `post_id`).

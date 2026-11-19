@@ -1,6 +1,15 @@
 Changelog
 =========
 
+2.2.0
+------
+
+- Pasted images: an image shown in a note or in the description (`<img src="...">`, `![](...)`,
+  `!image.png!`) that refers to an image attached to the issue is removed from the text and attached
+  to the Mattermost post by the relay of mattermost-plugin-redmine (requires its `files` support):
+  5 images per post, 10 MB each. Beyond that, or when the bot posts without the relay, the image is
+  a link at the end of the message
+
 2.1.1
 ------
 

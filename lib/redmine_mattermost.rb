@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RedmineMattermost
-  VERSION = '2.1.1'
+  VERSION = '2.2.0'
 
   # Variable d'environnement prioritaire sur le jeton saisi dans l'administration
   BOT_TOKEN_ENV = 'REDMINE_MATTERMOST_BOT_TOKEN'

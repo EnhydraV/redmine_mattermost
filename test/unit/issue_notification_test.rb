@@ -232,6 +232,33 @@ class IssueNotificationTest < ActiveSupport::TestCase
     assert_equal([2], mattermost_payloads.map { |payload| payload.dig('props', 'redmine_issue_id') })
   end
 
+  def test_pasted_image_leaves_the_note_and_goes_with_the_post
+    issue = Issue.find 2
+    with_mattermost_settings do
+      issue.init_journal User.find(2), "C'est reparti\n<img style=\"width: 1090px;\" src=\"picture.jpg\"><br>"
+      issue.save!
+    end
+
+    payload = mattermost_payloads.last
+
+    assert_equal "C'est reparti", attachment_fields(payload).detect { |field| field['title'] == 'Comment' }['value']
+    assert_equal([{ 'id' => 10, 'name' => 'picture.jpg' }], payload['images'].map { |image| image.except 'link' })
+    assert_match %r{\A\[picture\.jpg\]\(https?://[^)]+/attachments/10/picture\.jpg\)\z}, payload['images'].first['link']
+  end
+
+  def test_note_made_of_an_image_only_has_no_comment_field
+    issue = Issue.find 2
+    with_mattermost_settings do
+      issue.init_journal User.find(2), '![](picture.jpg)'
+      issue.save!
+    end
+
+    payload = mattermost_payloads.last
+
+    assert_not_includes attachment_fields(payload).pluck('title'), 'Comment'
+    assert_equal 1, payload['images'].size
+  end
+
   def test_ignored_description_is_not_sent_as_text
     issue = Issue.find 1
     with_mattermost_settings 'ignored_attributes' => %w[description] do
