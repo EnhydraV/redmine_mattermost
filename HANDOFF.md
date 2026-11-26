@@ -161,7 +161,7 @@ Vérifié dans les sources de Mattermost 12.0.0 : un plugin peut publier avec n'
 - Retiré : `images` dans le payload, `files` vers le relais, liens de repli (job et client revenus à leur état d'avant la 2.2.0). Le relais garde sa prise en charge de `files`, inutilisée.
 - Vérifié dans les sources de Mattermost 12.0.1 : `Post.AllStrings` inclut les valeurs des champs d'attachment, et `getImagesForPost` va chercher chaque image Markdown pour en connaître les dimensions : le serveur Mattermost doit donc joindre l'URL sans session.
 - gremlins (2026-11-26, lecture seule) : `ImageProxySettings.Enable = false`, `EnableLinkPreviews = true`, `RestrictLinkPreviews` vide ; depuis gremlins, `https://redmine.cubedesigners.com/login` répond 200 (46.105.50.14). Sans proxy d'images, chaque appli charge l'image chez Redmine : hors du réseau interne (mobile en 4G), l'image ne s'affiche pas. Le proxy d'images (local) de Mattermost réglerait ça, à décider par Vincent.
-- Non vérifié : rendu réel dans Mattermost (web, bureau, mobile), en attente du déploiement de la 2.3.0.
+- 2.3.0 déployée le 2026-11-26 : Vincent confirme que les images s'affichent à leur place. Non vérifié : mobile hors du réseau interne (proxy d'images coupé).
 
 ## Pistes (étape 2)
 
