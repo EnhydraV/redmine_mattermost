@@ -5,12 +5,9 @@ require File.expand_path '../../test_helper', __FILE__
 class MattermostDeliverJobTest < ActiveSupport::TestCase
   include RedmineMattermost::TestHelper
 
-  fixtures :attachments
-
   CHANNEL = { 'team' => 'dev', 'channel' => 'redmine' }.freeze
   PAYLOAD = { 'message' => 'Hello' }.freeze
   ACTOR = { 'username' => 'charlie', 'email' => 'charlie@example.com' }.freeze
-  IMAGE = { 'id' => 16, 'name' => 'testfile.png', 'link' => '[testfile.png](http://localhost:3000/attachments/16/testfile.png)' }.freeze
 
   def test_posts_to_the_resolved_channel
     RedmineMattermost::Client.any_instance.expects(:channel_id).with('dev', 'redmine').returns('c1')
@@ -138,40 +135,6 @@ class MattermostDeliverJobTest < ActiveSupport::TestCase
 
     with_mattermost_settings do
       MattermostDeliverJob.perform_now CHANNEL, PAYLOAD.merge('reply_to' => reply_to), ACTOR
-    end
-  end
-
-  def test_relay_receives_pasted_images_as_files
-    set_fixtures_attachments_directory
-    data = Base64.strict_encode64 File.binread(Attachment.find(16).diskfile)
-    RedmineMattermost::Client.any_instance.expects(:relay_post)
-                             .with(CHANNEL, ACTOR, PAYLOAD, files: [{ 'name' => 'testfile.png', 'data' => data }])
-                             .returns({ 'post_id' => 'p1' })
-
-    with_mattermost_settings do
-      MattermostDeliverJob.perform_now CHANNEL, PAYLOAD.merge('images' => [IMAGE]), ACTOR
-    end
-  ensure
-    set_tmp_attachments_directory
-  end
-
-  def test_unreadable_image_is_relayed_as_a_link
-    RedmineMattermost::Client.any_instance.expects(:relay_post)
-                             .with(CHANNEL, ACTOR, { 'message' => "Hello\n#{IMAGE['link']}" })
-                             .returns({ 'post_id' => 'p1' })
-
-    with_mattermost_settings do
-      MattermostDeliverJob.perform_now CHANNEL, PAYLOAD.merge('images' => [IMAGE.merge('id' => 0)]), ACTOR
-    end
-  end
-
-  def test_bot_posts_pasted_images_as_links
-    RedmineMattermost::Client.any_instance.expects(:channel_id).with('dev', 'redmine').returns('c1')
-    RedmineMattermost::Client.any_instance.expects(:create_post)
-                             .with({ 'message' => "Hello\n#{IMAGE['link']}", 'channel_id' => 'c1' })
-
-    with_mattermost_settings do
-      MattermostDeliverJob.perform_now CHANNEL, PAYLOAD.merge('images' => [IMAGE])
     end
   end
 

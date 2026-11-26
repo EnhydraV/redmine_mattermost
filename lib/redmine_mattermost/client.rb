@@ -81,12 +81,10 @@ module RedmineMattermost
     # Publication par le plugin relais, au nom de l'utilisateur quand il peut publier.
     # bot_message remplace le message quand le relais se rabat sur le bot ; reply_to
     # ({ 'root_id', 'channel_id' }) place le post dans ce fil s'il vise le même canal
-    # files : [{ 'name', 'data' (base64) }], téléversés par le relais et joints au post
-    def relay_post(target, actor, payload, bot_message: nil, reply_to: nil, files: nil)
+    def relay_post(target, actor, payload, bot_message: nil, reply_to: nil)
       body = { 'target' => target, 'actor' => actor, 'post' => payload }
       body['bot_message'] = bot_message if bot_message.present?
       body['reply_to'] = reply_to if reply_to.present?
-      body['files'] = files if files.present?
       request :post, '/posts', body, base: RELAY_PATH
     end
 

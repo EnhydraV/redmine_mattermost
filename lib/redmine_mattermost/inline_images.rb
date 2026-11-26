@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 module RedmineMattermost
-  # Images collées dans un texte (note, description) : retirées du texte et jointes au post par le relais.
+  # Images collées dans un texte (note, description) : la référence devient une image Markdown, à sa
+  # place dans le message, servie par Redmine sur une URL signée (MattermostImagesController) que le
+  # serveur et les applis Mattermost lisent sans session Redmine.
   # Un nom de fichier image sans chemin, retrouvé parmi les pièces jointes comme le fait Redmine
-  # (InlineAttachmentsScrubber) ; une référence qui ne mène à aucune image jointe reste dans le texte.
+  # (InlineAttachmentsScrubber) ; une référence qui ne mène à aucune image jointe reste telle quelle.
   module InlineImages
-    MAX_FILES = 5
-    MAX_FILE_SIZE = 10.megabytes
-
     EXTENSIONS = 'avif|bmp|gif|jpg|jpeg|jpe|png|webp'
     PATTERNS = [
       # HTML, tel que le produit le collage d'image : <img style="..." src="clipboard-....png"><br>
@@ -17,6 +16,8 @@ module RedmineMattermost
       # Textile : !image.png!, !{width:50%}image.png(alt)!
       %r{!(?:\{[^\}]*\})?[<>=]?(?<name>[^/\s!(]+?\.(?:#{EXTENSIONS}))(?:\([^)]*\))?!}io
     ].freeze
+    SERVABLE = /\.(?:#{EXTENSIONS})\z/io
+    SIGNATURE_LENGTH = 32
 
     module_function
 
@@ -24,37 +25,39 @@ module RedmineMattermost
       text.present? && PATTERNS.any? { |pattern| pattern.match? text }
     end
 
-    # [texte sans les images trouvées, pièces jointes de ces images]
-    def extract(text, attachments)
-      found = []
-      return [text, found] if text.blank? || attachments.blank?
+    # Texte où chaque image jointe citée devient ![nom](URL signée). L'URL produite contient des « / » :
+    # les motifs suivants, qui veulent un nom de fichier sans chemin, ne la reprennent pas.
+    def embed(text, attachments)
+      return text if text.blank? || attachments.blank?
 
-      cleaned = PATTERNS.reduce text do |result, pattern|
+      PATTERNS.reduce text do |result, pattern|
         result.gsub pattern do |reference|
           attachment = Attachment.latest_attach attachments, CGI.unescape(Regexp.last_match[:name])
-          next reference unless attachment&.image?
-
-          found << attachment
-          ''
+          servable?(attachment) ? "![#{Formatter.escape attachment.filename}](#{url_for attachment})" : reference
         end
       end
-      [cleaned.strip, found.uniq]
     end
 
-    # Entrées du payload : le job lit le fichier, ou se rabat sur le lien
-    def entries(attachments)
-      attachments.uniq.map! do |attachment|
-        { 'id' => attachment.id, 'name' => attachment.filename,
-          'link' => Formatter.object_link(attachment, attachment.filename) }
-      end
+    # Images matricielles seulement : un SVG servi depuis le domaine de Redmine pourrait porter du script
+    def servable?(attachment)
+      attachment.present? && attachment.image? && SERVABLE.match?(attachment.filename)
     end
 
-    # Contenu en base64 pour le relais ; nil quand le fichier manque ou dépasse la taille admise
-    def read(id)
-      attachment = Attachment.find_by id: id
-      return if attachment.nil? || !attachment.readable? || attachment.filesize > MAX_FILE_SIZE
+    def url_for(attachment)
+      Rails.application.routes.url_helpers.mattermost_image_url(
+        id: attachment.id, signature: signature(attachment), filename: attachment.filename,
+        **Mailer.default_url_options
+      )
+    end
 
-      Base64.strict_encode64 File.binread(attachment.diskfile)
+    # HMAC de l'identifiant et de l'empreinte du fichier, avec une clé dérivée de secret_key_base
+    def signature(attachment)
+      key = Rails.application.key_generator.generate_key 'redmine_mattermost/inline_images', 32
+      OpenSSL::HMAC.hexdigest('SHA256', key, "#{attachment.id}/#{attachment.digest}")[0, SIGNATURE_LENGTH]
+    end
+
+    def valid_signature?(attachment, given)
+      ActiveSupport::SecurityUtils.secure_compare signature(attachment), given.to_s
     end
   end
 end

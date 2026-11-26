@@ -9,7 +9,7 @@ This plugin is a fork of [redmine_messenger_so](https://github.com/smartorigin/r
 * Issue notifications: creation, updates, private issues and private notes (optional), reopened issues only (optional)
 * Changes, comments, attachments and the commit revision (when an issue is updated by a commit keyword) as message attachment fields
 * Ignored attributes: updates that only change them (without a note) are not posted, and they are left out of other updates
-* Pasted images: images shown in a note or in the description are attached to the Mattermost post (with the server plugin)
+* Pasted images: images shown in a note or in the description are shown in place in the Mattermost message
 * Wiki notifications: page creation and page updates
 * Mattermost mentions: default people to notify, and Redmine mentions (`@login`) converted to Mattermost mentions. The Mattermost user is found by username, or by email when Redmine logins are email addresses (Mattermost must show email addresses, *Site Configuration > Users and Teams > Show Email Address*); this also applies to direct messages
 * Direct messages to the users notified by Redmine
@@ -50,6 +50,12 @@ The directory must be named `redmine_mattermost`. Restart Redmine, then configur
 
 Each project can override these settings in *Settings > Mattermost* (permission *Manage Mattermost notifications*). Empty values are inherited from the parent project, then from the global settings.
 
+## Pasted images
+
+Images shown in a note or in the description (pasted images, `![](image.png)`, `!image.png!`) that refer to a raster image attached to the issue are shown in place in the Mattermost message. The reference becomes a Markdown image whose URL, `/mattermost/images/:id/:signature/:filename`, is served by Redmine without a session: the Mattermost server reads it to get the image size, and the apps load it. The signature is an HMAC of the attachment with a key derived from Rails' `secret_key_base`; changing that secret breaks the images of earlier messages.
+
+Anyone who has the URL can see the image without logging in to Redmine. Mattermost must reach Redmine; when Redmine is only reachable from a private network, enable the Mattermost image proxy (*Environment > Image Proxy*) so that apps outside that network get the images through the Mattermost server.
+
 ## Posting as the acting user (optional)
 
 With the Mattermost plugin [mattermost-plugin-redmine](https://github.com/EnhydraV/mattermost-plugin-redmine) (id `com.cubedesigners.redmine`), messages are published as the Mattermost user who acted in Redmine. Mattermost never notifies people of their own posts, so nobody is notified of what they just did in Redmine. Since the author is the post's own author, the message leaves out "updated by <user>"; when the bot posts instead, the full message is used. The same plugin adds a "Create a Redmine issue" action to Mattermost messages.
@@ -61,8 +67,6 @@ With the Mattermost plugin [mattermost-plugin-redmine](https://github.com/Enhydr
 The Mattermost user is the one whose username is the Redmine login, or, failing that, the one with the same email address (this lookup can be disabled in the plugin settings). A message is posted by that user when they are allowed to post in the channel, and direct messages are sent from that user to the recipient. Otherwise the bot posts, as it does when the server plugin does not answer.
 
 The server plugin lets the Redmine bot token publish as any user allowed to post in the target channel: keep the token out of the database with the `REDMINE_MATTERMOST_BOT_TOKEN` environment variable. A channel can still appear as unread to the user who acted, since posts created by a plugin do not mark the channel as viewed for their author.
-
-Images shown in a note or in the description (pasted images, `![](image.png)`, `!image.png!`) that refer to an image attached to the issue are removed from the text and sent to the server plugin, which attaches them to the post: up to 5 images of 10 MB each. Other images, and all of them when the bot posts without the server plugin, become links at the end of the message. The files are copied into the Mattermost file storage.
 
 Messages are sent by a background job (ActiveJob). Network errors and server errors (HTTP 429 and 5xx) are retried twice, 30 seconds apart; other errors are logged with the `[redmine_mattermost]` prefix.
 

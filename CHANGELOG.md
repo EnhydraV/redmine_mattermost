@@ -1,6 +1,15 @@
 Changelog
 =========
 
+2.3.0
+------
+
+- Pasted images are shown in place in the message: the reference becomes a Markdown image whose URL
+  (`/mattermost/images/:id/:signature/:filename`) is signed with a key derived from `secret_key_base`
+  and readable without a Redmine session, by the Mattermost server and apps. Raster images only (no
+  SVG). The images are no longer sent to the relay as files, and the bot posts them the same way
+- Anyone who has the URL of an image can see it without logging in to Redmine
+
 2.2.0
 ------
 

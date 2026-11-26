@@ -16,7 +16,6 @@ module RedmineMattermost
     def initialize(issue)
       @issue = issue
       @project = issue.project
-      @images = []
     end
 
     def created
@@ -30,7 +29,6 @@ module RedmineMattermost
                        props: issue_props
       end
       add_mention_users payload, @issue
-      add_images payload
       Notifier.deliver @project, payload, users: direct_message_users(@issue, @issue.author), actor: @issue.author
     end
 
@@ -53,7 +51,6 @@ module RedmineMattermost
       end
       payload['reply_to'] = @issue.mattermost_reply_to if @issue.mattermost_reply_to&.dig('root_id').present?
       add_mention_users payload, journal
-      add_images payload
       Notifier.deliver @project, payload, users: direct_message_users(journal, journal.user), actor: journal.user
     end
 
@@ -83,40 +80,34 @@ module RedmineMattermost
       end
 
       attachment = { 'fallback' => @issue.to_s, 'fields' => fields }
-      description = without_images @issue.description if enabled? :new_include_description
+      description = with_inline_images @issue.description if enabled? :new_include_description
       attachment['text'] = description if description.present?
       attachment
     end
 
     def update_attachment(journal, details)
       fields = details.filter_map { |detail| JournalField.for detail }
-      notes = without_images journal.notes
+      notes = with_inline_images journal.notes
       fields << Formatter.field(l(:label_comment), notes, short: false) if notes.present?
       fields << Formatter.field(l(:field_private_notes), l(:general_text_Yes)) if journal.private_notes?
       fields << changeset_field(@issue.mattermost_changeset) if @issue.mattermost_changeset
 
       attachment = { 'fallback' => @issue.to_s, 'fields' => fields }
-      description = without_images new_description(details) if enabled? :updated_include_description
+      description = with_inline_images new_description(details) if enabled? :updated_include_description
       attachment['text'] = description if description.present?
       attachment
     end
 
-    # Images collées retirées du texte, mises de côté pour être jointes au post
-    def without_images(text)
+    # Images collées : affichées à leur place, par une URL signée que Mattermost lit sans session
+    def with_inline_images(text)
       return text unless InlineImages.references? text
 
-      text, images = InlineImages.extract text, issue_attachments
-      @images.concat images
-      text
+      InlineImages.embed text, issue_attachments
     end
 
     # Relues en base : les images collées sont rattachées au ticket pendant l'enregistrement
     def issue_attachments
       @issue_attachments ||= Attachment.where(container: @issue).to_a
-    end
-
-    def add_images(payload)
-      payload['images'] = InlineImages.entries @images if @images.any?
     end
 
     def new_description(details)
